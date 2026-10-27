@@ -12,6 +12,7 @@ export const MENSAJES = {
   RETENCION_VENCIDA:
     'Pasaron los minutos de reserva y el lugar se liberó. Volvé a reservar si sigue habiendo lugar.',
   PAGO_NO_DISPONIBLE: 'Este pago ya no está disponible. Revisá tus reservas.',
+  PAGO_FALLIDO: 'No pudimos conectar con Mercado Pago. Tu lugar sigue guardado unos minutos: probá de nuevo.',
   PAGOS_NO_CONFIGURADOS: 'Los pagos no están disponibles en este momento. Usá un crédito o probá más tarde.',
   NO_AUTORIZADO: 'No tenés permiso para hacer esto.',
   NO_ENCONTRADO: 'No encontramos lo que buscabas. Volvé a los horarios.',

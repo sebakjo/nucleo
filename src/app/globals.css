@@ -1,0 +1,233 @@
+@import 'tailwindcss';
+
+/*
+ * Tokens de DESIGN.md. Los colores viven en variables para que el panel de administración pueda
+ * cambiar a modo oscuro con [data-tema='oscuro'] sin duplicar clases.
+ */
+:root {
+  --cal: #f5f7f6;
+  --superficie: #ffffff;
+  --linea: #d6ddda;
+  --grafito: #1f2a33;
+  --grafito-2: #55626b;
+  --ocupado: #c4cccf;
+  --error: #b3412f;
+  --error-tenue: #f6e3df;
+  --eucalipto: #2e5e4e;
+  --eucalipto-hover: #244b3e;
+  --eucalipto-tenue: #e3eee9;
+  --ambar: #e0a339;
+  --ambar-tinta: #7a4e05;
+  --ambar-tenue: #f8ebd2;
+  --rosa: #e7b4a6;
+  --rosa-tinta: #8e4a3c;
+  --rosa-tenue: #f7e6e1;
+  --completa: #1f2a33;
+  --completa-carril: #46535d;
+  --sobre-completa: #ffffff;
+  color-scheme: light;
+}
+
+[data-tema='oscuro'] {
+  --cal: #121a1f;
+  --superficie: #1a242b;
+  --linea: #2c3942;
+  --grafito: #e4eae8;
+  --grafito-2: #9daba6;
+  --ocupado: #3b4851;
+  --error: #e58a78;
+  --error-tenue: #3a2420;
+  --eucalipto: #74b59d;
+  --eucalipto-hover: #8cc5b0;
+  --eucalipto-tenue: #1e3530;
+  --ambar: #e8b65a;
+  --ambar-tinta: #f0c97d;
+  --ambar-tenue: #3a2e17;
+  --rosa: #e7b4a6;
+  --rosa-tinta: #f0c4b8;
+  --rosa-tenue: #3b2824;
+  --completa: #33414b;
+  --completa-carril: #4c5b66;
+  --sobre-completa: #e4eae8;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-onest), ui-sans-serif, system-ui, sans-serif;
+
+  --color-cal: var(--cal);
+  --color-superficie: var(--superficie);
+  --color-linea: var(--linea);
+  --color-grafito: var(--grafito);
+  --color-grafito-2: var(--grafito-2);
+  --color-ocupado: var(--ocupado);
+  --color-error: var(--error);
+  --color-error-tenue: var(--error-tenue);
+  --color-eucalipto: var(--eucalipto);
+  --color-eucalipto-hover: var(--eucalipto-hover);
+  --color-eucalipto-tenue: var(--eucalipto-tenue);
+  --color-ambar: var(--ambar);
+  --color-ambar-tinta: var(--ambar-tinta);
+  --color-ambar-tenue: var(--ambar-tenue);
+  --color-rosa: var(--rosa);
+  --color-rosa-tinta: var(--rosa-tinta);
+  --color-rosa-tenue: var(--rosa-tenue);
+  --color-completa: var(--completa);
+  --color-completa-carril: var(--completa-carril);
+  --color-sobre-completa: var(--sobre-completa);
+
+  /* Escala tipográfica (DESIGN.md) */
+  --text-titular: 2.5rem;
+  --text-titular--line-height: 2.75rem;
+  --text-titulo: 1.75rem;
+  --text-titulo--line-height: 2.125rem;
+  --text-seccion: 1.25rem;
+  --text-seccion--line-height: 1.625rem;
+  --text-subtitulo: 1.0625rem;
+  --text-subtitulo--line-height: 1.5rem;
+  --text-cuerpo: 1rem;
+  --text-cuerpo--line-height: 1.5rem;
+  --text-chico: 0.875rem;
+  --text-chico--line-height: 1.25rem;
+  --text-leyenda: 0.75rem;
+  --text-leyenda--line-height: 1rem;
+  --text-dato-grande: 2rem;
+  --text-dato-grande--line-height: 2.25rem;
+  --text-dato: 1.25rem;
+  --text-dato--line-height: 1.5rem;
+
+  --radius-bloque: 6px;
+  --radius-carril: 3px;
+  --radius-boton: 8px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--cal);
+    color: var(--grafito);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01' 0;
+    text-rendering: optimizeLegibility;
+  }
+  :focus-visible {
+    outline: 2px solid var(--eucalipto);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  ::selection {
+    background: var(--eucalipto-tenue);
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Botones: principal (eucalipto), secundario (borde) y de peligro. Mínimo 44 px de alto. */
+@utility boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.125rem;
+  border-radius: var(--radius-boton);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+  transition:
+    background-color 120ms,
+    border-color 120ms,
+    color 120ms;
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+@utility boton-principal {
+  background: var(--eucalipto);
+  color: #fff;
+  [data-tema='oscuro'] & {
+    color: #0f1a16;
+  }
+  &:hover:not(:disabled) {
+    background: var(--eucalipto-hover);
+  }
+}
+@utility boton-secundario {
+  background: var(--superficie);
+  color: var(--grafito);
+  border: 1px solid var(--linea);
+  &:hover:not(:disabled) {
+    border-color: var(--grafito-2);
+  }
+}
+@utility boton-peligro {
+  background: var(--superficie);
+  color: var(--error);
+  border: 1px solid var(--linea);
+  &:hover:not(:disabled) {
+    border-color: var(--error);
+  }
+}
+
+@utility campo {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 0.875rem;
+  border-radius: var(--radius-boton);
+  border: 1px solid var(--linea);
+  background: var(--superficie);
+  color: var(--grafito);
+  font-size: 1rem;
+  &:focus-visible {
+    outline-offset: 0;
+    border-color: var(--eucalipto);
+  }
+  &[aria-invalid='true'] {
+    border-color: var(--error);
+  }
+}
+
+/* El momento memorable: tu carril se llena de abajo hacia arriba. */
+@keyframes llenar-carril {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@utility carril-llenandose {
+  transform-origin: bottom;
+  animation: llenar-carril 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes pulso {
+  50% {
+    opacity: 0.55;
+  }
+}
+@utility esqueleto {
+  background: var(--linea);
+  border-radius: var(--radius-bloque);
+  animation: pulso 1.6s ease-in-out infinite;
+}
+
+/* Carril retenido (pago pendiente): rayado. */
+@utility carril-rayado {
+  background-image: repeating-linear-gradient(-45deg, var(--rosa) 0 4px, var(--rosa-tenue) 4px 8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carril-llenandose,
+  .esqueleto {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}

@@ -246,17 +246,15 @@ export async function sembrar(
   const creados = new Date(ahora.getTime() - 90 * DIA)
   async function crearUsuario(nombre: string, email: string, rol: 'alumno' | 'instructor' | 'admin') {
     const id = crypto.randomUUID()
-    await db
-      .insert(user)
-      .values({
-        id,
-        name: nombre,
-        email,
-        emailVerified: true,
-        role: rol,
-        createdAt: creados,
-        updatedAt: creados,
-      })
+    await db.insert(user).values({
+      id,
+      name: nombre,
+      email,
+      emailVerified: true,
+      role: rol,
+      createdAt: creados,
+      updatedAt: creados,
+    })
     await db.insert(account).values({
       id: crypto.randomUUID(),
       accountId: id,
@@ -439,8 +437,10 @@ export async function sembrar(
   const reservarSofia = (c: (typeof todas)[number] | undefined, cancelar?: 'tarde') => {
     if (!c) return
     reservasSofia.add(c.id)
-    const t = c.iniciaEn.getTime() - r.entre(2, 4) * DIA
-    if (t >= ahora.getTime()) return
+    const t =
+      c.iniciaEn > ahora
+        ? ahora.getTime() - r.entre(20, 60) * HORA
+        : c.iniciaEn.getTime() - r.entre(2, 4) * DIA
     en(t, () =>
       ignorarNegocio(async () => {
         const hecha = await reservarClase(db, {
@@ -478,10 +478,10 @@ export async function sembrar(
     const h = hora(c.iniciaEn)
     const dia = diaIso(c.iniciaEn)
     if (dia === 6 && h === '09:30') return 6
-    if (h === '18:00' || h === '19:15') return r.entre(4, 6)
-    if (h === '07:00') return r.entre(3, 6)
-    if (h === '12:30') return r.entre(2, 5)
-    return r.entre(1, 4)
+    if (h === '18:00' || h === '19:15') return r.entre(3, 6)
+    if (h === '07:00') return r.entre(2, 6)
+    if (h === '12:30') return r.entre(2, 4)
+    return r.entre(1, 3)
   }
   // El jueves 18:00 de esta semana con Lucía queda con lugar: es el ejemplo del recorrido demo.
   const juevesDemo = claseEn(0, 4, '18:00')
@@ -580,6 +580,14 @@ export async function sembrar(
       await ignorarNegocio(() =>
         anotarEnEspera(db, { usuarioId: sofia, claseId: llenaFutura.id, ahora: new Date(t + MIN) }),
       )
+    })
+  }
+
+  // El cron de vencimientos corre una vez por día durante toda la historia.
+  for (let d = 50; d >= 0; d--) {
+    const t = ahora.getTime() - d * DIA
+    en(t, async () => {
+      await vencerPacks(db, new Date(t))
     })
   }
 
