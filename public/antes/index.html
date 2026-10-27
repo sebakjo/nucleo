@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Núcleo Pilates ✨ Reservas Online</title>
+    <!--
+      Prototipo "antes": así llega muchas veces un proyecto hecho con un generador de apps por IA.
+      Se ve bien y "funciona" en una demo, pero por dentro tiene 7 problemas graves.
+      Cada uno está marcado con un comentario "PROBLEMA N" en el código.
+      La versión de producción y la comparación están en /caso.
+    -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 45%, #f97316 100%);
+      }
+      .gradient-text {
+        background: linear-gradient(90deg, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .card {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+      }
+      .fade-in {
+        animation: fadeIn 0.6s ease-out both;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="bg-gray-900 py-1.5 text-center text-xs text-gray-300">
+      Proyecto de demostración: los pagos funcionan en modo de prueba ·
+      <a href="/caso" class="underline">ver la versión de producción</a>
+    </div>
+
+    <header class="gradient-bg text-white">
+      <nav class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+        <div class="text-2xl font-extrabold tracking-tight">✨ Núcleo Pilates</div>
+        <div class="hidden gap-8 text-sm font-medium md:flex">
+          <a href="#clases" class="hover:opacity-80">Clases</a>
+          <a href="#mis-reservas" class="hover:opacity-80">Mis Reservas</a>
+          <a href="#precios" class="hover:opacity-80">Precios</a>
+        </div>
+      </nav>
+      <div class="mx-auto max-w-6xl px-6 pb-24 pt-12 text-center">
+        <span class="rounded-full bg-white/20 px-4 py-1 text-xs font-semibold uppercase tracking-widest"
+          >🧘 Pilates Reformer · Buenos Aires</span
+        >
+        <h1 class="mt-6 text-4xl font-extrabold leading-tight md:text-6xl">
+          Transformá tu cuerpo,<br />encontrá tu <span class="text-yellow-200">equilibrio</span>
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg text-white/90">
+          Reservá tu clase de pilates reformer en segundos. Instructores certificados, grupos reducidos y la
+          mejor energía de la ciudad. 💜
+        </p>
+        <a
+          href="#clases"
+          class="mt-10 inline-block rounded-full bg-white px-8 py-4 font-semibold text-purple-600 shadow-xl hover:scale-105"
+          >Reservar ahora →</a
+        >
+      </div>
+    </header>
+
+    <section id="clases" class="mx-auto -mt-12 max-w-6xl px-6">
+      <div class="card fade-in rounded-2xl bg-white p-6">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-purple-500">Esta semana</p>
+            <h2 class="text-2xl font-bold">Clases <span class="gradient-text">disponibles</span></h2>
+          </div>
+          <div id="dias" class="flex flex-wrap gap-2"></div>
+        </div>
+        <div id="grilla" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+      </div>
+    </section>
+
+    <section id="precios" class="mx-auto mt-16 max-w-6xl px-6">
+      <p class="text-center text-xs font-semibold uppercase tracking-widest text-purple-500">Precios</p>
+      <h2 class="mt-2 text-center text-3xl font-bold">Elegí tu <span class="gradient-text">plan</span></h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        <div class="card fade-in rounded-2xl bg-white p-6 text-center">
+          <div class="text-4xl">🌱</div>
+          <h3 class="mt-3 text-lg font-bold">Clase suelta</h3>
+          <p class="mt-2 text-3xl font-extrabold">$22.000</p>
+          <p class="mt-2 text-sm text-gray-500">Ideal para probar</p>
+        </div>
+        <div class="card fade-in rounded-2xl bg-white p-6 text-center">
+          <div class="text-4xl">🔥</div>
+          <h3 class="mt-3 text-lg font-bold">Pack 8 clases</h3>
+          <p class="mt-2 text-3xl font-extrabold">$136.000</p>
+          <p class="mt-2 text-sm text-gray-500">El más elegido</p>
+        </div>
+        <div class="card fade-in rounded-2xl bg-white p-6 text-center">
+          <div class="text-4xl">💎</div>
+          <h3 class="mt-3 text-lg font-bold">Pack 12 clases</h3>
+          <p class="mt-2 text-3xl font-extrabold">$186.000</p>
+          <p class="mt-2 text-sm text-gray-500">Máximo ahorro</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="mis-reservas" class="mx-auto mt-16 max-w-6xl px-6 pb-24">
+      <div class="card fade-in rounded-2xl bg-white p-6">
+        <p class="text-xs font-semibold uppercase tracking-widest text-purple-500">Tu agenda</p>
+        <h2 class="text-2xl font-bold">Mis <span class="gradient-text">reservas</span></h2>
+        <div id="lista-reservas" class="mt-6 space-y-3"></div>
+      </div>
+    </section>
+
+    <footer class="gradient-bg py-8 text-center text-sm text-white/80">
+      © Núcleo Pilates · Hecho con 💜 en Buenos Aires
+    </footer>
+
+    <!-- Modal de reserva -->
+    <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-4">
+      <div class="card w-full max-w-md rounded-2xl bg-white p-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-widest text-purple-500">Reservar clase</p>
+            <h3 id="modal-titulo" class="mt-1 text-xl font-bold"></h3>
+            <p id="modal-detalle" class="text-sm text-gray-500"></p>
+          </div>
+          <button id="cerrar-modal" class="text-2xl text-gray-400 hover:text-gray-600">×</button>
+        </div>
+
+        <div id="paso-datos" class="mt-6 space-y-3">
+          <input id="nombre" placeholder="Tu nombre" class="w-full rounded-xl border border-gray-200 px-4 py-3" />
+          <input id="email" placeholder="Tu email" class="w-full rounded-xl border border-gray-200 px-4 py-3" />
+          <input id="telefono" placeholder="Tu teléfono" class="w-full rounded-xl border border-gray-200 px-4 py-3" />
+          <input id="cupon" placeholder="Cupón de descuento" class="w-full rounded-xl border border-gray-200 px-4 py-3" />
+          <div class="flex items-center justify-between rounded-xl bg-purple-50 px-4 py-3">
+            <span class="text-sm font-medium text-purple-700">Total</span>
+            <span id="total" class="text-xl font-extrabold text-purple-700"></span>
+          </div>
+          <button
+            id="boton-pagar"
+            class="gradient-bg w-full rounded-xl py-3 font-semibold text-white shadow-lg hover:opacity-90"
+          >
+            Pagar y reservar ✨
+          </button>
+        </div>
+
+        <div id="paso-procesando" class="mt-8 hidden text-center">
+          <div class="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-purple-200 border-t-purple-600"></div>
+          <p class="mt-4 font-medium">Procesando tu pago...</p>
+        </div>
+
+        <div id="paso-exito" class="mt-8 hidden text-center">
+          <div class="text-5xl">🎉</div>
+          <p class="mt-4 text-xl font-bold">¡Pago exitoso!</p>
+          <p class="mt-2 text-gray-500">Tu lugar está confirmado. ¡Te esperamos!</p>
+          <button id="listo" class="gradient-bg mt-6 w-full rounded-xl py-3 font-semibold text-white">Genial 🙌</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ---------------------------------------------------------------------------------------------
+      // "Base de datos" de clases
+      // ---------------------------------------------------------------------------------------------
+      const PRECIO_CLASE = 22000
+
+      // PROBLEMA 3: precio calculado en el navegador y modificable. Los cupones están en el código
+      // fuente (cualquiera los lee con "ver código") y el total que se "cobra" sale de un atributo del
+      // botón, que se puede cambiar desde las herramientas del navegador antes de pagar.
+      const CUPONES = { NUCLEO50: 0.5, BIENVENIDA: 0.2, AMIGOS: 0.3 }
+
+      const PLANTILLA = [
+        { dia: 0, hora: '07:00', nombre: 'Reformer Base', instructor: 'Tomás', ocupados: 4 },
+        { dia: 0, hora: '18:00', nombre: 'Reformer Clásico', instructor: 'Lucía', ocupados: 5 },
+        { dia: 0, hora: '20:30', nombre: 'Reformer Power', instructor: 'Martín', ocupados: 2 },
+        { dia: 1, hora: '08:15', nombre: 'Movilidad', instructor: 'Valentina', ocupados: 1 },
+        { dia: 1, hora: '19:15', nombre: 'Reformer Clásico', instructor: 'Lucía', ocupados: 6 },
+        { dia: 2, hora: '07:00', nombre: 'Reformer Base', instructor: 'Tomás', ocupados: 3 },
+        { dia: 2, hora: '18:00', nombre: 'Reformer Power', instructor: 'Martín', ocupados: 4 },
+        { dia: 3, hora: '12:30', nombre: 'Movilidad', instructor: 'Valentina', ocupados: 2 },
+        { dia: 3, hora: '18:00', nombre: 'Reformer Clásico', instructor: 'Lucía', ocupados: 5 },
+        { dia: 3, hora: '20:30', nombre: 'Reformer Power', instructor: 'Martín', ocupados: 3 },
+        { dia: 4, hora: '07:00', nombre: 'Reformer Base', instructor: 'Tomás', ocupados: 2 },
+        { dia: 4, hora: '19:15', nombre: 'Reformer Clásico', instructor: 'Lucía', ocupados: 4 },
+        { dia: 5, hora: '09:30', nombre: 'Reformer Base', instructor: 'Tomás', ocupados: 5 },
+        { dia: 5, hora: '10:45', nombre: 'Movilidad', instructor: 'Valentina', ocupados: 1 },
+      ]
+
+      // Arma las clases de esta semana. El "backend" las devolvía en UTC (Buenos Aires = UTC-3).
+      function clasesDeLaSemana() {
+        const hoy = new Date()
+        const lunes = new Date(Date.UTC(hoy.getUTCFullYear(), hoy.getUTCMonth(), hoy.getUTCDate()))
+        lunes.setUTCDate(lunes.getUTCDate() - ((lunes.getUTCDay() + 6) % 7))
+        return PLANTILLA.map((c, i) => {
+          const [h, m] = c.hora.split(':').map(Number)
+          const inicio = new Date(lunes)
+          inicio.setUTCDate(lunes.getUTCDate() + c.dia)
+          inicio.setUTCHours(h + 3, m) // 18:00 en Buenos Aires = 21:00 UTC
+          return { ...c, id: 'clase-' + i, inicio: inicio.toISOString(), cupo: 6 }
+        })
+      }
+
+      const clases = clasesDeLaSemana()
+
+      // ---------------------------------------------------------------------------------------------
+      // "Persistencia"
+      // ---------------------------------------------------------------------------------------------
+
+      // PROBLEMA 1: las reservas se guardan en localStorage. Cada navegador tiene su propia agenda:
+      // el estudio no ve ninguna reserva, otro alumno no ve las tuyas y si borrás los datos del
+      // navegador (o cambiás de celular) tu reserva desaparece.
+      function leerReservas() {
+        return JSON.parse(localStorage.getItem('nucleo_reservas') || '[]')
+      }
+      function guardarReservas(reservas) {
+        localStorage.setItem('nucleo_reservas', JSON.stringify(reservas))
+      }
+
+      function ocupadosDe(clase) {
+        // PROBLEMA 2: sobreventa. El cupo se controla contra las reservas de ESTE navegador. Si 20
+        // personas reservan al mismo tiempo desde 20 celulares, cada una ve los mismos lugares libres
+        // y las 20 reservas se aceptan para 6 reformers.
+        const mias = leerReservas().filter((r) => r.claseId === clase.id && !r.cancelada).length
+        return clase.ocupados + mias
+      }
+
+      function reservar(claseId, datos) {
+        const clase = clases.find((c) => c.id === claseId)
+        // PROBLEMA 2 (sigue): chequear y guardar son dos pasos separados, sin bloqueo ni servidor.
+        if (ocupadosDe(clase) >= clase.cupo) {
+          alert('Ups, esta clase está completa 😢')
+          return null
+        }
+        // PROBLEMA 7: sin validaciones de datos. Nombre vacío, email "asd" o teléfono "hola" se
+        // aceptan igual, y no hay límite de largo.
+        const reserva = {
+          id: Date.now().toString(),
+          claseId,
+          nombre: datos.nombre,
+          email: datos.email,
+          telefono: datos.telefono,
+          precio: datos.precio,
+          pagada: false,
+          cancelada: false,
+          creada: new Date().toISOString(),
+        }
+        const reservas = leerReservas()
+        reservas.push(reserva)
+        guardarReservas(reservas)
+        return reserva
+      }
+
+      // PROBLEMA 4: el botón "Pagar" solo marca la reserva como pagada. No hay pasarela de pago ni
+      // confirmación de un tercero: se espera un segundo para que parezca real y listo.
+      function pagar(reservaId) {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const reservas = leerReservas()
+            const r = reservas.find((x) => x.id === reservaId)
+            r.pagada = true
+            guardarReservas(reservas)
+            resolve(r)
+          }, 1200)
+        })
+      }
+
+      // PROBLEMA 5: sin usuarios. Cualquiera ve todas las reservas y cancela cualquiera, sin
+      // importar quién la hizo ni cuánto falta para la clase (no hay regla de 12 horas).
+      function cancelar(reservaId) {
+        const reservas = leerReservas()
+        const r = reservas.find((x) => x.id === reservaId)
+        r.cancelada = true
+        guardarReservas(reservas)
+      }
+
+      // ---------------------------------------------------------------------------------------------
+      // Interfaz
+      // ---------------------------------------------------------------------------------------------
+      const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
+      let diaSeleccionado = null
+      let claseSeleccionada = null
+
+      // PROBLEMA 6: horarios en la zona horaria del navegador. toLocaleTimeString() y getDay() usan
+      // la zona de quien mira: desde Madrid la clase de las 18:00 aparece a las 22:00, y la de las
+      // 20:30 aparece al día siguiente. El cliente reserva un horario que no es el que cree.
+      function formatearHora(iso) {
+        return new Date(iso).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+      }
+      function diaDe(iso) {
+        return new Date(iso).getDay()
+      }
+      function fechaCorta(iso) {
+        const d = new Date(iso)
+        return DIAS[d.getDay()] + ' ' + d.getDate()
+      }
+
+      function renderDias() {
+        const dias = [...new Set(clases.map((c) => diaDe(c.inicio)))]
+        if (diaSeleccionado === null) diaSeleccionado = dias[0]
+        document.getElementById('dias').innerHTML = dias
+          .map((d) => {
+            const ejemplo = clases.find((c) => diaDe(c.inicio) === d)
+            const activo = d === diaSeleccionado
+            return `<button onclick="seleccionarDia(${d})" class="rounded-full px-4 py-2 text-sm font-medium ${
+              activo ? 'gradient-bg text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }">${fechaCorta(ejemplo.inicio)}</button>`
+          })
+          .join('')
+      }
+
+      function seleccionarDia(d) {
+        diaSeleccionado = d
+        render()
+      }
+
+      function renderGrilla() {
+        const delDia = clases.filter((c) => diaDe(c.inicio) === diaSeleccionado)
+        document.getElementById('grilla').innerHTML = delDia
+          .map((c) => {
+            const ocupados = ocupadosDe(c)
+            const libres = Math.max(c.cupo - ocupados, 0)
+            const porcentaje = Math.min((ocupados / c.cupo) * 100, 100)
+            return `
+            <div class="card fade-in rounded-2xl border border-gray-100 bg-white p-5">
+              <div class="flex items-center justify-between">
+                <span class="rounded-full bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-600">${formatearHora(
+                  c.inicio,
+                )}</span>
+                <span class="text-xs text-gray-400">55 min</span>
+              </div>
+              <h3 class="mt-4 text-lg font-bold">${c.nombre}</h3>
+              <p class="text-sm text-gray-500">con ${c.instructor} ⭐</p>
+              <div class="mt-4 h-2 rounded-full bg-gray-100">
+                <div class="gradient-bg h-2 rounded-full" style="width:${porcentaje}%"></div>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">${libres} lugares disponibles</p>
+              <button onclick="abrirModal('${c.id}')" class="gradient-bg mt-4 w-full rounded-xl py-2.5 text-sm font-semibold text-white hover:opacity-90">
+                Reservar ✨
+              </button>
+            </div>`
+          })
+          .join('')
+      }
+
+      function renderReservas() {
+        const reservas = leerReservas().filter((r) => !r.cancelada)
+        const cont = document.getElementById('lista-reservas')
+        if (!reservas.length) {
+          cont.innerHTML = '<p class="text-gray-400">Todavía no hay reservas 🙈</p>'
+          return
+        }
+        // PROBLEMA 7 (sigue): el nombre se inserta con innerHTML sin escapar. Un "nombre" como
+        // <img src=x onerror=alert(1)> ejecuta código en la página.
+        cont.innerHTML = reservas
+          .map((r) => {
+            const c = clases.find((x) => x.id === r.claseId)
+            return `
+            <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-gray-50 px-4 py-3">
+              <div>
+                <p class="font-semibold">${c.nombre} · ${fechaCorta(c.inicio)} ${formatearHora(c.inicio)}</p>
+                <p class="text-sm text-gray-500">${r.nombre} · $${r.precio.toLocaleString('es-AR')} · ${
+                  r.pagada ? '✅ Pagada' : '⏳ Pendiente'
+                }</p>
+              </div>
+              <button onclick="cancelarYRender('${r.id}')" class="rounded-lg bg-red-50 px-3 py-1.5 text-sm font-medium text-red-500 hover:bg-red-100">Cancelar</button>
+            </div>`
+          })
+          .join('')
+      }
+
+      function cancelarYRender(id) {
+        if (confirm('¿Seguro que querés cancelar?')) {
+          cancelar(id)
+          render()
+        }
+      }
+
+      function calcularTotal() {
+        const cupon = document.getElementById('cupon').value.trim().toUpperCase()
+        const descuento = CUPONES[cupon] || 0
+        return Math.round(PRECIO_CLASE * (1 - descuento))
+      }
+
+      function actualizarTotal() {
+        const total = calcularTotal()
+        document.getElementById('total').textContent = '$' + total.toLocaleString('es-AR')
+        // PROBLEMA 3 (sigue): el monto a cobrar queda guardado en el DOM.
+        document.getElementById('boton-pagar').dataset.precio = total
+      }
+
+      function abrirModal(claseId) {
+        claseSeleccionada = clases.find((c) => c.id === claseId)
+        document.getElementById('modal-titulo').textContent = claseSeleccionada.nombre
+        document.getElementById('modal-detalle').textContent =
+          fechaCorta(claseSeleccionada.inicio) + ' · ' + formatearHora(claseSeleccionada.inicio) + ' · con ' + claseSeleccionada.instructor
+        mostrarPaso('paso-datos')
+        actualizarTotal()
+        const modal = document.getElementById('modal')
+        modal.classList.remove('hidden')
+        modal.classList.add('flex')
+      }
+
+      function cerrarModal() {
+        const modal = document.getElementById('modal')
+        modal.classList.add('hidden')
+        modal.classList.remove('flex')
+      }
+
+      function mostrarPaso(id) {
+        for (const p of ['paso-datos', 'paso-procesando', 'paso-exito']) {
+          document.getElementById(p).classList.toggle('hidden', p !== id)
+        }
+      }
+
+      document.getElementById('cupon').addEventListener('input', actualizarTotal)
+      document.getElementById('cerrar-modal').addEventListener('click', cerrarModal)
+      document.getElementById('listo').addEventListener('click', () => {
+        cerrarModal()
+        render()
+      })
+
+      document.getElementById('boton-pagar').addEventListener('click', async (e) => {
+        const reserva = reservar(claseSeleccionada.id, {
+          nombre: document.getElementById('nombre').value,
+          email: document.getElementById('email').value,
+          telefono: document.getElementById('telefono').value,
+          precio: Number(e.currentTarget.dataset.precio), // PROBLEMA 3 (sigue): el navegador dice cuánto se paga.
+        })
+        if (!reserva) return
+        mostrarPaso('paso-procesando')
+        await pagar(reserva.id)
+        mostrarPaso('paso-exito')
+      })
+
+      function render() {
+        renderDias()
+        renderGrilla()
+        renderReservas()
+      }
+
+      render()
+    </script>
+  </body>
+</html>
