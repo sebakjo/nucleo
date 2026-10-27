@@ -74,7 +74,7 @@ Una sola familia, **Onest** (variable, 400–800, cifras tabulares con `tnum`), 
 | dato                               | 20/24                  | 650 tabular | hora en cada bloque de la grilla           |
 | dato chico                         | 14/20                  | 600 tabular | cupos ("4 de 6"), montos en tablas         |
 
-Sin mayúsculas sostenidas. Los títulos van en minúscula inicial ("tus próximas clases").
+Sin mayúsculas sostenidas. Títulos y botones en mayúscula inicial y el resto en minúscula ("Tus próximas clases", "Cancelar reserva"), como los ejemplos del brief.
 
 ## Forma
 
@@ -293,7 +293,7 @@ En móvil la barra lateral pasa a una fila de pestañas arriba y la grilla se re
 
 ## Copy
 
-Voseo rioplatense, frases en minúscula inicial, verbos consistentes:
+Voseo rioplatense, mayúscula solo al inicio de la frase, verbos consistentes:
 
 | Acción          | Botón                | Resultado                                                         |
 | --------------- | -------------------- | ----------------------------------------------------------------- |
@@ -318,3 +318,13 @@ Pasé el plan por la lista del brief y por lo que saldría "por defecto" con un 
 - **Animaciones de entrada en cada sección**: ninguna. Las únicas animaciones son el carril que se llena al reservar y los carriles de la simulación.
 - **Degradados como decoración**: ninguno en producción. El único degradado del repo es el del prototipo `/antes`, a propósito.
 - **Una sola familia con cifras tabulares**: Onest, con `tabular-nums` en todo dato.
+
+## Decisiones tomadas durante la construcción
+
+- **Mayúscula inicial en vez de minúscula inicial.** El plan proponía títulos en minúscula ("tus próximas clases"). Al escribir el copy real choqué con los ejemplos del brief, que van con mayúscula ("Reservaste el jueves 18:00 con Lucía"), y la minúscula hacía que los botones parecieran texto suelto. Quedó _sentence case_ en todo.
+- **La sobreventa en rojo, solo en `/caso`.** En la simulación, los 6 carriles vendidos del prototipo usan el gris oscuro de "ocupado" y los 14 que sobran usan `error` (`#B3412F`), separados por una línea: es el único lugar del sitio donde aparece un carril rojo, porque es el único estado que no debería existir. La lista de espera de producción va en círculos neutros numerados: el puesto es un dato, no un estado de alarma.
+- **El tema del panel se fija antes de pintar.** Un script mínimo en `<head>` deja la preferencia en `<html data-tema-panel>` y el CSS solo la aplica dentro de `#panel`; los diálogos se montan dentro del panel para heredarla. Así no hay destello de tema claro y el sitio público sigue siempre en claro.
+- **Métricas como frases y barras finas.** Una cifra protagonista por vista (la ocupación), el resto en mosaicos chicos; las comparaciones van en texto ("+7 puntos frente a la semana anterior"), sin flechas ni verde/rojo de "bien/mal". Las barras son de una sola serie (sin leyenda: el título la nombra), de 24 px como máximo, con el extremo de datos redondeado, tooltip con mouse o teclado y la misma información como tabla.
+- **Agenda densa.** Bloques de 64 px con iniciales del instructor y "+2 esp." cuando hay lista de espera. El detalle se abre en un panel lateral por URL (`?clase=`), para poder compartir el enlace.
+- **Fotos sin personas.** Las dos fotos del estudio (Unsplash) muestran reformers y accesorios, nunca gente; los instructores van con iniciales.
+- **El tercer paso de la reserva cambia de nombre.** El wireframe decía «elegí la clase ─ confirmá ─ pagá» siempre. Con crédito no hay nada que pagar, así que el tercer paso es «Tu lugar» (el reformer asignado) y, al confirmar, el indicador pasa a «3 de 3». Si la clase se paga suelta, sigue siendo «Pagá».

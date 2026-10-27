@@ -24,8 +24,9 @@ type Confirmacion = { titulo: string; detalle: string; reformer: number }
 
 const mayuscula = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
-function Pasos({ actual }: { actual: 2 | 3 }) {
-  const pasos = ['Elegí la clase', 'Confirmá', 'Pagá']
+/** El tercer paso es pagar si la clase se paga suelta; con crédito, o una vez reservada, es el lugar asignado. */
+function Pasos({ actual, ultimo }: { actual: 2 | 3; ultimo: 'Pagá' | 'Tu lugar' }) {
+  const pasos = ['Elegí la clase', 'Confirmá', ultimo]
   return (
     <ol className="flex flex-wrap items-center gap-x-3 gap-y-1 text-chico" aria-label="Pasos de la reserva">
       {pasos.map((p, i) => {
@@ -374,10 +375,14 @@ export function Reserva({
     )
   }
 
+  const reservada = Boolean(confirmacion) || mia?.tipo === 'reservada'
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_440px] lg:gap-12">
       <div>
-        <Pasos actual={medio === 'pago' && !confirmacion && mia?.tipo !== 'reservada' && usuario ? 3 : 2} />
+        <Pasos
+          actual={reservada || (medio === 'pago' && usuario) ? 3 : 2}
+          ultimo={medio === 'pago' && !reservada ? 'Pagá' : 'Tu lugar'}
+        />
         <p className="mt-8 text-grafito-2">{mayuscula(fechaLarga(inicio))}</p>
         <h1 className="mt-1 text-dato-grande font-semibold tracking-[-0.01em] tabular">
           {hora(inicio)} – {hora(fin)}

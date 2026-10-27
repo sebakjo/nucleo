@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Núcleo: imagen de la app (Next standalone) y una imagen de herramientas para migrar, sembrar y
-# correr el cron local. `docker compose up --build` levanta todo.
+# correr el cron local. `docker compose --profile completo up --build` levanta todo.
 
 FROM node:24-alpine AS base
 ENV PNPM_HOME=/pnpm PATH=/pnpm:$PATH NEXT_TELEMETRY_DISABLED=1

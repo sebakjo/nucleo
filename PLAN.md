@@ -15,7 +15,7 @@
 - Sin sobreventa: `SELECT ... FOR UPDATE` sobre la clase, contar activas (confirmadas + pendientes no vencidas) y recién ahí insertar. Índice único parcial (alumno, clase) para reservas activas.
 - Créditos: se descuentan y devuelven en la misma transacción que la reserva o la cancelación; cada movimiento queda en `movimientos_credito`.
 - Regla de cancelación (12 h) en un solo archivo: `src/lib/dominio/reglas.ts`, con tests.
-- Copy en español rioplatense con voseo, frases en minúscula inicial, sin flechas decorativas.
+- Copy en español rioplatense con voseo, mayúscula solo al inicio de la frase, sin flechas decorativas.
 - Si falta una credencial: modo simulado documentado en el README. Nunca frenar.
 - Imprescindible terminado y pulido antes de tocar lo opcional.
 
@@ -34,16 +34,18 @@
   (sitio)/pago-simulado/[id]/page.tsx checkout simulado (solo test y local sin credenciales)
   (sitio)/mis-reservas/page.tsx      próximas, pasadas, créditos y vencimientos
   (sitio)/entrar, (sitio)/registrarme
-  instructor/page.tsx                clases propias con lista y asistencia
+  (sitio)/instructor/page.tsx        clases propias con lista y asistencia
   admin/…                            agenda, plantillas, instructores, alumnos, pagos, métricas, precios, mensajes
-  caso/page.tsx                      comparación, tabla, simulación y métricas
+  (sitio)/caso/page.tsx              comparación, tabla, simulación y métricas
   api/auth/[...all]                  Better Auth
   api/disponibilidad                 lugares por clase (polling cada 10 s)
   api/webhooks/mercadopago           firma x-signature, consulta a la API, idempotente
   api/cron/[tarea]                   liberar, recordatorios, vencer-packs, lista-de-espera, emails, generar-clases
   api/caso/simulacion                20 reservas simultáneas contra la clase aislada (NDJSON en vivo)
 /src/db/                   schema.ts · index.ts · seed.ts
-/src/lib/dominio/          reglas · reservas · creditos · lista-espera · pagos · tareas · metricas
+/src/lib/dominio/          reglas · cupos · reservas · creditos · lista-espera · pagos · precios · tareas
+/src/lib/consultas/        lecturas para las páginas (horarios, alumno, panel y métricas)
+/src/lib/caso/             el código de reserva del prototipo y la simulación de /caso
 /src/lib/pagos/            mercadopago · simulado · firma
 /src/lib/email/            plantillas React Email · outbox · transporte (SMTP / Resend / log)
 /src/lib/                  tiempo (zona horaria) · auth · sesion (roles) · limite (rate limit en Postgres)
@@ -81,7 +83,7 @@
 4. **Pagos, packs y créditos** — retención de 10 minutos, Mercado Pago (preferencia, retorno, webhook con firma, consulta a la API, idempotencia), proveedor simulado, packs, movimientos de crédito, tests del webhook.
 5. **Cancelaciones, lista de espera, emails y cron** — regla de 12 h, promoción automática o con oferta de 30 min, plantillas React Email + vista WhatsApp, outbox, endpoints de cron protegidos y script local.
 6. **Panel de administración y métricas** — agenda con atajos, plantillas, instructores, alumnos, pagos, precios, métricas, modo oscuro; vista de instructor.
-7. **`/caso`** — slider antes/después, tabla de problemas, simulación de 20 reservas en vivo (con límite de uso y bloqueo), métricas reales leídas de `docs/metricas.json`.
+7. **`/caso`** — slider antes/después, tabla de problemas, simulación de 20 reservas en vivo (con límite de uso y bloqueo), métricas reales leídas de `docs/metricas/*.json`.
 8. **Calidad y entregables** — Playwright e2e, Lighthouse móvil ≥ 90, a11y, responsive, CI, README, capturas revisadas, caso de estudio, guion, deploy.
 
 Cada fase cierra con tests en verde, capturas revisadas y un commit.

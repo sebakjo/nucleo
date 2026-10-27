@@ -18,7 +18,8 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:reset": "tsx scripts/seed.ts --reset",
     "cron": "tsx scripts/cron-local.ts",
-    "setup": "pnpm db:up && pnpm db:migrate && pnpm db:migrate --test && pnpm db:seed",
+    "setup": "tsx scripts/preparar-env.ts && pnpm db:up && pnpm db:migrate && pnpm db:migrate --test && pnpm db:seed",
+    "demo": "pnpm setup && pnpm dev",
     "lighthouse": "node scripts/lighthouse.mjs",
     "metricas:tests": "tsx scripts/metricas-tests.ts"
   },

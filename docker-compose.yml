@@ -1,7 +1,8 @@
 name: nucleo
 
 # `pnpm db:up` levanta solo db y mailpit (para `pnpm dev`).
-# `docker compose up --build` levanta todo: base, migraciones + datos de demo, app y cron.
+# `docker compose --profile completo up --build` levanta todo: base, migraciones + datos de demo,
+# app y cron, sin instalar Node.
 
 x-entorno: &entorno
   APP_ENV: local

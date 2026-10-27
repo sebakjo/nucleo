@@ -65,9 +65,10 @@ export async function registrarme(_: EstadoFormulario, form: FormData): Promise<
   redirect(rutaSegura(datos.data.volver))
 }
 
-/** Botones "Entrar como alumno demo / admin demo". Solo con DEMO_MODE=1. */
+/** Botones "Entrar como … demo" (alumno, instructor, admin). Solo con DEMO_MODE=1. */
 export async function entrarDemo(form: FormData) {
-  const cuenta = form.get('cuenta') === 'admin' ? CUENTAS_DEMO.admin : CUENTAS_DEMO.alumno
+  const rol = form.get('cuenta')
+  const cuenta = rol === 'admin' || rol === 'instructor' ? CUENTAS_DEMO[rol] : CUENTAS_DEMO.alumno
   const contrasena = contrasenaDemo()
   if (!modoDemo() || !contrasena) redirect('/entrar')
   await auth.api.signInEmail({
@@ -75,11 +76,9 @@ export async function entrarDemo(form: FormData) {
     headers: await headers(),
   })
   const volver = String(form.get('volver') ?? '')
-  redirect(
-    cuenta === CUENTAS_DEMO.admin
-      ? rutaSegura(volver.startsWith('/admin') ? volver : '/admin')
-      : rutaSegura(volver),
-  )
+  if (cuenta === CUENTAS_DEMO.admin) redirect(rutaSegura(volver.startsWith('/admin') ? volver : '/admin'))
+  if (cuenta === CUENTAS_DEMO.instructor) redirect('/instructor')
+  redirect(rutaSegura(volver))
 }
 
 export async function salir() {

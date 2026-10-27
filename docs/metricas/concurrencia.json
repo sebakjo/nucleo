@@ -1,5 +1,5 @@
 {
-  "fecha": "2026-10-27T04:36:21.015Z",
+  "fecha": "2026-10-27T05:05:29.930Z",
   "intentos": 20,
   "cupo": 6,
   "confirmadas": 6,
@@ -12,5 +12,5 @@
     5,
     6
   ],
-  "duracionMs": 145
+  "duracionMs": 170
 }

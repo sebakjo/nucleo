@@ -14,15 +14,32 @@ export function CuentasDemo({ volver }: { volver: string }) {
         <form action={entrarDemo}>
           <input type="hidden" name="cuenta" value="alumno" />
           <input type="hidden" name="volver" value={volver} />
-          <button type="submit" className="boton w-full justify-between boton-secundario">
+          <button
+            type="submit"
+            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+          >
             <span>Entrar como alumno demo</span>
             <span className="text-chico font-normal text-grafito-2">Sofía, con créditos y reservas</span>
           </button>
         </form>
         <form action={entrarDemo}>
+          <input type="hidden" name="cuenta" value="instructor" />
+          <input type="hidden" name="volver" value={volver} />
+          <button
+            type="submit"
+            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+          >
+            <span>Entrar como instructor demo</span>
+            <span className="text-chico font-normal text-grafito-2">Lucía, sus clases y asistencia</span>
+          </button>
+        </form>
+        <form action={entrarDemo}>
           <input type="hidden" name="cuenta" value="admin" />
           <input type="hidden" name="volver" value={volver} />
-          <button type="submit" className="boton w-full justify-between boton-secundario">
+          <button
+            type="submit"
+            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+          >
             <span>Entrar como admin demo</span>
             <span className="text-chico font-normal text-grafito-2">Panel del estudio</span>
           </button>
