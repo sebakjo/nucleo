@@ -1,9 +1,9 @@
 import { drizzle } from 'drizzle-orm/node-postgres'
-import { Pool } from 'pg'
+import { Pool, type PoolConfig } from 'pg'
 import * as schema from './schema'
 
-export function crearDb(connectionString: string | undefined, max = 10) {
-  const pool = new Pool({ connectionString, max })
+export function crearDb(connectionString: string | undefined, max = 10, opciones: PoolConfig = {}) {
+  const pool = new Pool({ connectionString, max, ...opciones })
   return { pool, db: drizzle(pool, { schema, casing: 'snake_case' }) }
 }
 

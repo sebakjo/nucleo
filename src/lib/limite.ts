@@ -21,3 +21,16 @@ export async function consumirLimite(
     returning conteo`)
   return Number(res.rows[0]?.conteo ?? 0) <= max
 }
+
+/** Cuántos usos quedan en la ventana actual, sin consumir ninguno. */
+export async function usosRestantes(
+  clave: string,
+  max: number,
+  ventanaSeg: number,
+  db: DB = dbPorDefecto,
+): Promise<number> {
+  const res = await db.execute<{ conteo: number }>(sql`
+    select case when ventana_inicio < now() - make_interval(secs => ${ventanaSeg}) then 0 else conteo end as conteo
+    from limites where clave = ${clave}`)
+  return Math.max(0, max - Number(res.rows[0]?.conteo ?? 0))
+}
