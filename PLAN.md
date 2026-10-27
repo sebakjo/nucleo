@@ -55,23 +55,23 @@
 
 ## Modelo de datos
 
-| Tabla | Clave |
-|---|---|
-| `user`, `session`, `account`, `verification` | Better Auth; `user.role` = alumno · instructor · admin |
-| `instructores` | nombre, bio, iniciales; `user_id` opcional (rol instructor) |
-| `tipos_clase` | nombre, descripción, duración, nivel |
-| `plantillas` | día ISO, hora local, duración, instructor, tipo, cupo, activa |
-| `clases` | instancia: `inicia_en`/`termina_en` (timestamptz), cupo, estado, `plantilla_id`, `sandbox` (clase aislada de `/caso`); único (plantilla, inicio) |
-| `reservas` | estado: pendiente_pago · confirmada · cancelada · cancelada_tarde · asistio · vencida; `reformer` 1–6; `retenida_hasta`; medio: credito · pago; índices únicos parciales (alumno, clase) y (clase, reformer) para activas |
-| `lista_espera` | posición, estado: esperando · oferta · promovida · vencida · retirada; `oferta_vence` |
-| `productos_pack` | 4 · 8 · 12 clases, precio, validez 30 días (editables) |
-| `packs` | comprados: créditos totales y restantes, vencimiento, estado |
-| `movimientos_credito` | delta, motivo, pack, reserva — auditable |
-| `pagos` | proveedor, id externo, preferencia, estado, monto, referencia, tipo (clase · pack) |
-| `eventos_webhook` | id de notificación único → idempotencia |
-| `emails` | outbox: plantilla, datos, estado, intentos |
-| `ajustes` | precio de la clase suelta |
-| `limites` | ventana fija por clave (rate limit compartido entre instancias) |
+| Tabla                                        | Clave                                                                                                                                                                                                                     |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `user`, `session`, `account`, `verification` | Better Auth; `user.role` = alumno · instructor · admin                                                                                                                                                                    |
+| `instructores`                               | nombre, bio, iniciales; `user_id` opcional (rol instructor)                                                                                                                                                               |
+| `tipos_clase`                                | nombre, descripción, duración, nivel                                                                                                                                                                                      |
+| `plantillas`                                 | día ISO, hora local, duración, instructor, tipo, cupo, activa                                                                                                                                                             |
+| `clases`                                     | instancia: `inicia_en`/`termina_en` (timestamptz), cupo, estado, `plantilla_id`, `sandbox` (clase aislada de `/caso`); único (plantilla, inicio)                                                                          |
+| `reservas`                                   | estado: pendiente_pago · confirmada · cancelada · cancelada_tarde · asistio · vencida; `reformer` 1–6; `retenida_hasta`; medio: credito · pago; índices únicos parciales (alumno, clase) y (clase, reformer) para activas |
+| `lista_espera`                               | posición, estado: esperando · oferta · promovida · vencida · retirada; `oferta_vence`                                                                                                                                     |
+| `productos_pack`                             | 4 · 8 · 12 clases, precio, validez 30 días (editables)                                                                                                                                                                    |
+| `packs`                                      | comprados: créditos totales y restantes, vencimiento, estado                                                                                                                                                              |
+| `movimientos_credito`                        | delta, motivo, pack, reserva — auditable                                                                                                                                                                                  |
+| `pagos`                                      | proveedor, id externo, preferencia, estado, monto, referencia, tipo (clase · pack)                                                                                                                                        |
+| `eventos_webhook`                            | id de notificación único → idempotencia                                                                                                                                                                                   |
+| `emails`                                     | outbox: plantilla, datos, estado, intentos                                                                                                                                                                                |
+| `ajustes`                                    | precio de la clase suelta                                                                                                                                                                                                 |
+| `limites`                                    | ventana fija por clave (rate limit compartido entre instancias)                                                                                                                                                           |
 
 ## Fases
 

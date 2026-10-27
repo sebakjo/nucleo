@@ -1,0 +1,16 @@
+{
+  "fecha": "2026-10-27T03:41:11.165Z",
+  "intentos": 20,
+  "cupo": 6,
+  "confirmadas": 6,
+  "rechazadasPorCupo": 14,
+  "reformers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "duracionMs": 217
+}

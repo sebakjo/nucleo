@@ -1,0 +1,8 @@
+drizzle/meta
+pnpm-lock.yaml
+public/antes
+docs/lighthouse
+docs/metricas
+.next
+playwright-report
+test-results

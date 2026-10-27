@@ -1,0 +1,28 @@
+name: nucleo
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: nucleo
+      POSTGRES_PASSWORD: nucleo
+      POSTGRES_DB: nucleo
+    ports:
+      - '${DB_PORT:-5433}:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U nucleo -d nucleo']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  mailpit:
+    image: axllent/mailpit:v1.32
+    ports:
+      - '${MAILPIT_WEB_PORT:-8026}:8025'
+      - '${MAILPIT_SMTP_PORT:-1026}:1025'
+
+volumes:
+  db:

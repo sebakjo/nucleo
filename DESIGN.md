@@ -20,59 +20,59 @@ La paleta de partida del brief se mantiene. Se agregan las tintas (versiones osc
 
 ### Base
 
-| Token | Hex | Uso | Contraste |
-|---|---|---|---|
-| `cal` | `#F5F7F6` | fondo general | — |
-| `superficie` | `#FFFFFF` | bloques de clase libres, paneles, campos | — |
-| `linea` | `#D6DDDA` | bordes de 1 px, divisores | — |
-| `grafito` | `#1F2A33` | texto; clase completa | 14,6:1 con blanco · 13,4:1 sobre cal |
-| `grafito-2` | `#55626B` | texto secundario | 5,8:1 sobre cal |
-| `ocupado` | `#C4CCCF` | carril ocupado por otra persona | — |
-| `error` | `#B3412F` | errores de formulario y desborde del prototipo en `/caso` | 5,6:1 con blanco |
+| Token        | Hex       | Uso                                                       | Contraste                            |
+| ------------ | --------- | --------------------------------------------------------- | ------------------------------------ |
+| `cal`        | `#F5F7F6` | fondo general                                             | —                                    |
+| `superficie` | `#FFFFFF` | bloques de clase libres, paneles, campos                  | —                                    |
+| `linea`      | `#D6DDDA` | bordes de 1 px, divisores                                 | —                                    |
+| `grafito`    | `#1F2A33` | texto; clase completa                                     | 14,6:1 con blanco · 13,4:1 sobre cal |
+| `grafito-2`  | `#55626B` | texto secundario                                          | 5,8:1 sobre cal                      |
+| `ocupado`    | `#C4CCCF` | carril ocupado por otra persona                           | —                                    |
+| `error`      | `#B3412F` | errores de formulario y desborde del prototipo en `/caso` | 5,6:1 con blanco                     |
 
 ### Estados
 
-| Estado | Color | Tinta | Fondo tenue | Uso |
-|---|---|---|---|---|
-| libre | `eucalipto` `#2E5E4E` | blanco (7,4:1) | `eucalipto-tenue` `#E3EEE9` | carriles libres, botón principal, foco, enlaces |
-| últimos lugares | `ambar` `#E0A339` | `ambar-tinta` `#7A4E05` (6,1:1 sobre su fondo) | `ambar-tenue` `#F8EBD2` | carriles libres cuando quedan 1 o 2; avisos |
-| completa | `grafito` `#1F2A33` | blanco | — | bloque entero en grafito |
-| tu reserva | `rosa` `#E7B4A6` | `rosa-tinta` `#8E4A3C` (6,6:1 con blanco; 3,6:1 sobre rosa como borde) | `rosa-tenue` `#F7E6E1` | tu carril, tus reservas en "Mis reservas" |
+| Estado          | Color                 | Tinta                                                                  | Fondo tenue                 | Uso                                             |
+| --------------- | --------------------- | ---------------------------------------------------------------------- | --------------------------- | ----------------------------------------------- |
+| libre           | `eucalipto` `#2E5E4E` | blanco (7,4:1)                                                         | `eucalipto-tenue` `#E3EEE9` | carriles libres, botón principal, foco, enlaces |
+| últimos lugares | `ambar` `#E0A339`     | `ambar-tinta` `#7A4E05` (6,1:1 sobre su fondo)                         | `ambar-tenue` `#F8EBD2`     | carriles libres cuando quedan 1 o 2; avisos     |
+| completa        | `grafito` `#1F2A33`   | blanco                                                                 | —                           | bloque entero en grafito                        |
+| tu reserva      | `rosa` `#E7B4A6`      | `rosa-tinta` `#8E4A3C` (6,6:1 con blanco; 3,6:1 sobre rosa como borde) | `rosa-tenue` `#F7E6E1`      | tu carril, tus reservas en "Mis reservas"       |
 
 ### Modo oscuro (panel de administración)
 
 No es "casi negro con acento ácido": es el mismo grafito llevado a superficie, con el eucalipto aclarado lo justo para mantener contraste.
 
-| Token | Claro | Oscuro |
-|---|---|---|
-| `cal` | `#F5F7F6` | `#121A1F` |
-| `superficie` | `#FFFFFF` | `#1A242B` |
-| `linea` | `#D6DDDA` | `#2C3942` |
+| Token             | Claro     | Oscuro    |
+| ----------------- | --------- | --------- |
+| `cal`             | `#F5F7F6` | `#121A1F` |
+| `superficie`      | `#FFFFFF` | `#1A242B` |
+| `linea`           | `#D6DDDA` | `#2C3942` |
 | `grafito` (texto) | `#1F2A33` | `#E4EAE8` |
-| `grafito-2` | `#55626B` | `#9DABA6` |
-| `eucalipto` | `#2E5E4E` | `#74B59D` |
+| `grafito-2`       | `#55626B` | `#9DABA6` |
+| `eucalipto`       | `#2E5E4E` | `#74B59D` |
 | `eucalipto-tenue` | `#E3EEE9` | `#1E3530` |
-| `ambar-tenue` | `#F8EBD2` | `#3A2E17` |
-| `rosa-tenue` | `#F7E6E1` | `#3B2824` |
-| `ocupado` | `#C4CCCF` | `#3B4851` |
-| bloque completo | `#1F2A33` | `#33414B` |
+| `ambar-tenue`     | `#F8EBD2` | `#3A2E17` |
+| `rosa-tenue`      | `#F7E6E1` | `#3B2824` |
+| `ocupado`         | `#C4CCCF` | `#3B4851` |
+| bloque completo   | `#1F2A33` | `#33414B` |
 
 ## Tipografía
 
 Una sola familia, **Onest** (variable, 400–800, cifras tabulares con `tnum`), cargada con `next/font` y `display: swap` con métricas de fallback para no mover el layout.
 
-| Rol | Tamaño / interlínea | Peso | Notas |
-|---|---|---|---|
-| titular (`/caso`, retorno de pago) | 40/44 (30/34 en móvil) | 750 | `letter-spacing: -0.02em` |
-| título de página | 28/34 | 700 | |
-| sección | 20/26 | 650 | |
-| subtítulo | 17/24 | 600 | |
-| cuerpo | 16/24 | 400 | |
-| chico | 14/20 | 450 | texto secundario |
-| leyenda | 12/16 | 550 | carriles, metadatos de tabla |
-| dato grande | 32/36 | 650 tabular | hora en la reserva y en el retorno de pago |
-| dato | 20/24 | 650 tabular | hora en cada bloque de la grilla |
-| dato chico | 14/20 | 600 tabular | cupos ("4 de 6"), montos en tablas |
+| Rol                                | Tamaño / interlínea    | Peso        | Notas                                      |
+| ---------------------------------- | ---------------------- | ----------- | ------------------------------------------ |
+| titular (`/caso`, retorno de pago) | 40/44 (30/34 en móvil) | 750         | `letter-spacing: -0.02em`                  |
+| título de página                   | 28/34                  | 700         |                                            |
+| sección                            | 20/26                  | 650         |                                            |
+| subtítulo                          | 17/24                  | 600         |                                            |
+| cuerpo                             | 16/24                  | 400         |                                            |
+| chico                              | 14/20                  | 450         | texto secundario                           |
+| leyenda                            | 12/16                  | 550         | carriles, metadatos de tabla               |
+| dato grande                        | 32/36                  | 650 tabular | hora en la reserva y en el retorno de pago |
+| dato                               | 20/24                  | 650 tabular | hora en cada bloque de la grilla           |
+| dato chico                         | 14/20                  | 600 tabular | cupos ("4 de 6"), montos en tablas         |
 
 Sin mayúsculas sostenidas. Los títulos van en minúscula inicial ("tus próximas clases").
 
@@ -88,13 +88,13 @@ Sin mayúsculas sostenidas. Los títulos van en minúscula inicial ("tus próxim
 
 Cada bloque de clase lleva 6 carriles verticales (un reformer visto desde arriba es un rectángulo largo). En la grilla miden 10 × 24 px; en la reserva, 40 × 120 px con el número de reformer debajo.
 
-| Carril | Relleno | Borde |
-|---|---|---|
-| libre | `eucalipto-tenue` | `eucalipto` 1,5 px |
-| libre con 1–2 lugares | `ambar-tenue` | `ambar` 1,5 px + `ambar-tinta` |
-| ocupado | `ocupado` | ninguno |
-| tuyo | `rosa` | `rosa-tinta` 1,5 px |
-| retenido para vos (pago pendiente) | rayado `rosa`/`rosa-tenue` | `rosa-tinta` punteado |
+| Carril                             | Relleno                    | Borde                          |
+| ---------------------------------- | -------------------------- | ------------------------------ |
+| libre                              | `eucalipto-tenue`          | `eucalipto` 1,5 px             |
+| libre con 1–2 lugares              | `ambar-tenue`              | `ambar` 1,5 px + `ambar-tinta` |
+| ocupado                            | `ocupado`                  | ninguno                        |
+| tuyo                               | `rosa`                     | `rosa-tinta` 1,5 px            |
+| retenido para vos (pago pendiente) | rayado `rosa`/`rosa-tenue` | `rosa-tinta` punteado          |
 
 Los carriles son decorativos para lectores de pantalla (`aria-hidden`), y el bloque tiene el texto completo: "jueves 30, 18:00, Reformer clásico con Lucía Ferreyra, 4 de 6 lugares ocupados".
 
@@ -295,13 +295,13 @@ En móvil la barra lateral pasa a una fila de pestañas arriba y la grilla se re
 
 Voseo rioplatense, frases en minúscula inicial, verbos consistentes:
 
-| Acción | Botón | Resultado |
-|---|---|---|
-| reservar | Reservar | Reservaste el jueves 18:00 con Lucía. Te queda 1 crédito |
-| pagar | Pagar $ 22.000 | Pagaste y reservaste el jueves 18:00 |
-| cancelar | Cancelar reserva | Cancelaste tu clase del jueves. Te devolvimos el crédito |
-| lista de espera | Anotarme en la lista | Te anotaste en la lista de espera. Sos el puesto 2 |
-| pack | Comprar pack de 8 | Compraste el pack de 8. Tenés 8 créditos hasta el 26 de noviembre |
+| Acción          | Botón                | Resultado                                                         |
+| --------------- | -------------------- | ----------------------------------------------------------------- |
+| reservar        | Reservar             | Reservaste el jueves 18:00 con Lucía. Te queda 1 crédito          |
+| pagar           | Pagar $ 22.000       | Pagaste y reservaste el jueves 18:00                              |
+| cancelar        | Cancelar reserva     | Cancelaste tu clase del jueves. Te devolvimos el crédito          |
+| lista de espera | Anotarme en la lista | Te anotaste en la lista de espera. Sos el puesto 2                |
+| pack            | Comprar pack de 8    | Compraste el pack de 8. Tenés 8 créditos hasta el 26 de noviembre |
 
 Estados vacíos que invitan a actuar: "Todavía no reservaste ninguna clase. Elegí un horario de la semana".
 
