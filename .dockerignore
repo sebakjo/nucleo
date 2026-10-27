@@ -1,0 +1,12 @@
+.git
+.next
+.next-e2e
+node_modules
+.env
+.env.*
+!.env.example
+test-results
+playwright-report
+docs/lighthouse
+docs/screenshots
+*.log

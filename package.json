@@ -18,7 +18,9 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:reset": "tsx scripts/seed.ts --reset",
     "cron": "tsx scripts/cron-local.ts",
-    "setup": "pnpm db:up && pnpm db:migrate && pnpm db:migrate --test && pnpm db:seed"
+    "setup": "pnpm db:up && pnpm db:migrate && pnpm db:migrate --test && pnpm db:seed",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "metricas:tests": "tsx scripts/metricas-tests.ts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",

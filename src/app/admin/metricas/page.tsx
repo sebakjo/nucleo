@@ -101,7 +101,10 @@ async function Contenido({ searchParams }: { searchParams: PageProps<'/admin/met
               <span className="tabular">
                 {m.actual.ocupados} de {m.actual.lugares} lugares
               </span>{' '}
-              · {diferencia(ocupacion, ocupacionAnterior, 'puntos')}
+              ·{' '}
+              {m.anterior.lugares > 0
+                ? diferencia(ocupacion, ocupacionAnterior, 'puntos')
+                : 'sin clases la semana anterior'}
             </>
           }
         />

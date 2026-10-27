@@ -16,7 +16,7 @@ export function CuentasDemo({ volver }: { volver: string }) {
           <input type="hidden" name="volver" value={volver} />
           <button type="submit" className="boton w-full justify-between boton-secundario">
             <span>Entrar como alumno demo</span>
-            <span className="text-chico font-normal text-grafito-2">Sofía, 2 créditos</span>
+            <span className="text-chico font-normal text-grafito-2">Sofía, con créditos y reservas</span>
           </button>
         </form>
         <form action={entrarDemo}>

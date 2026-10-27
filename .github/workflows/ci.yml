@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: nucleo
+          POSTGRES_PASSWORD: nucleo
+          POSTGRES_DB: nucleo_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U nucleo -d nucleo_test"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    env:
+      # Valores de prueba para CI: no son secretos y no abren nada real.
+      APP_ENV: test
+      APP_URL: http://localhost:3030
+      DATABASE_URL: postgres://nucleo:nucleo@localhost:5432/nucleo_test
+      DATABASE_URL_TEST: postgres://nucleo:nucleo@localhost:5432/nucleo_test
+      BETTER_AUTH_SECRET: ci-solo-para-tests-0123456789abcdef0123456789
+      DEMO_MODE: '1'
+      DEMO_PASSWORD: ci-demo-2026
+      MP_WEBHOOK_SECRET: ci-webhook
+      CRON_SECRET: ci-cron
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint y formato
+        run: pnpm lint && pnpm format:check
+      - name: Tipos
+        run: pnpm typecheck
+      - name: Migraciones
+        run: pnpm db:migrate --test
+      - name: Tests de reglas, concurrencia y webhook (Vitest + Postgres)
+        run: pnpm test
+      - name: Navegador para e2e
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Tests de punta a punta (Playwright)
+        run: pnpm test:e2e
+      - name: Build de producción
+        run: pnpm build
+        env:
+          APP_ENV: production
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

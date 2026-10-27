@@ -1,5 +1,38 @@
 {
-  "fecha": null,
-  "herramienta": "Lighthouse 13, móvil, mediana de 3 corridas",
-  "paginas": []
+  "fecha": "2026-10-27T04:48:12.160Z",
+  "herramienta": "Lighthouse 13.5.0, móvil, mediana de 3 corridas",
+  "paginas": [
+    {
+      "ruta": "/antes",
+      "nombre": "Prototipo (antes)",
+      "rendimiento": 76,
+      "accesibilidad": 88,
+      "buenasPracticas": 100,
+      "seo": 90
+    },
+    {
+      "ruta": "/",
+      "nombre": "Horarios",
+      "rendimiento": 97,
+      "accesibilidad": 100,
+      "buenasPracticas": 100,
+      "seo": 100
+    },
+    {
+      "ruta": "/clase/[id]",
+      "nombre": "Reserva",
+      "rendimiento": 98,
+      "accesibilidad": 100,
+      "buenasPracticas": 100,
+      "seo": 100
+    },
+    {
+      "ruta": "/caso",
+      "nombre": "Caso de estudio",
+      "rendimiento": 97,
+      "accesibilidad": 100,
+      "buenasPracticas": 100,
+      "seo": 100
+    }
+  ]
 }

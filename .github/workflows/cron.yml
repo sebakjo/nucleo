@@ -1,0 +1,20 @@
+name: Tareas programadas
+
+# Alternativa al cron de Vercel en el plan gratuito (que permite una ejecución por día):
+# cada 15 minutos llama a /api/cron/todo con el secreto. Configurá en el repo la variable
+# APP_URL y el secreto CRON_SECRET; sin APP_URL el job no hace nada.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    if: ${{ vars.APP_URL != '' }}
+    steps:
+      - name: Llamar a /api/cron/todo
+        run: >
+          curl --fail --silent --show-error --max-time 60
+          -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+          "${{ vars.APP_URL }}/api/cron/todo"

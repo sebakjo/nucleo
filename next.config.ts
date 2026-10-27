@@ -9,6 +9,10 @@ const cabecerasDeSeguridad = [
 ]
 
 const nextConfig: NextConfig = {
+  // Los e2e compilan en otra carpeta para no pisar la build normal ni el servidor de desarrollo.
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  // La imagen de Docker usa el servidor standalone; en Vercel y con `pnpm start` no hace falta.
+  output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false,

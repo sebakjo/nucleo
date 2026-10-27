@@ -25,6 +25,7 @@ export type EstadoPanel = { ok: boolean; mensaje: string } | null
 
 const Id = z.string().uuid()
 const DIAS = ['', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
+const LOS_DIAS = ['', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábados', 'domingos']
 
 /**
  * Cada acción del panel vuelve a leer la sesión y exige el rol en el servidor: que el botón no
@@ -132,7 +133,7 @@ export async function crearPlantilla(_: EstadoPanel, form: FormData): Promise<Es
       await generarClases(db, new Date())
       const generadas = await db.$count(clases, eq(clases.plantillaId, nueva.id))
       refresh()
-      return `Creaste ${tipo.nombre} los ${DIAS[p.diaSemana]} a las ${p.hora} con ${inst.nombre}. Se generaron ${generadas} ${generadas === 1 ? 'clase' : 'clases'} en las próximas 3 semanas.`
+      return `Creaste ${tipo.nombre} los ${LOS_DIAS[p.diaSemana]} a las ${p.hora} con ${inst.nombre}. Se generaron ${generadas} ${generadas === 1 ? 'clase' : 'clases'} en las próximas 3 semanas.`
     }),
   )
 }

@@ -46,3 +46,7 @@ next-env.d.ts
 /playwright-report
 /blob-report
 /playwright/.cache
+
+# e2e
+/.next-e2e
+/e2e/.datos.json

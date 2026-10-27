@@ -167,10 +167,10 @@ async function Retorno({
       <div className="flex gap-6">
         <CarrilEstado estado={carril} />
         <div>
-          <h1 className="text-titulo font-bold" role="status">
-            {titulo}
-          </h1>
-          <p className="mt-2 text-grafito-2">{detalle}</p>
+          <div role="status">
+            <h1 className="text-titulo font-bold">{titulo}</h1>
+            <p className="mt-2 text-grafito-2">{detalle}</p>
+          </div>
           <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1 text-chico">
             <dt className="text-grafito-2">Concepto</dt>
             <dd>{pago.descripcion}</dd>

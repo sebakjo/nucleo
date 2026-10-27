@@ -1,5 +1,21 @@
 name: nucleo
 
+# `pnpm db:up` levanta solo db y mailpit (para `pnpm dev`).
+# `docker compose up --build` levanta todo: base, migraciones + datos de demo, app y cron.
+
+x-entorno: &entorno
+  APP_ENV: local
+  APP_URL: http://localhost:3030
+  DATABASE_URL: postgres://nucleo:nucleo@db:5432/nucleo
+  # Valores de desarrollo local, no secretos reales. En un deploy se definen aparte.
+  BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-solo-para-docker-local-cambialo-en-produccion}
+  DEMO_MODE: '1'
+  DEMO_PASSWORD: ${DEMO_PASSWORD:-demo-nucleo-2026}
+  MP_ACCESS_TOKEN: ${MP_ACCESS_TOKEN:-}
+  MP_WEBHOOK_SECRET: ${MP_WEBHOOK_SECRET:-solo-para-docker-local}
+  SMTP_URL: smtp://mailpit:1025
+  CRON_SECRET: ${CRON_SECRET:-solo-para-docker-local}
+
 services:
   db:
     image: postgres:17-alpine
@@ -23,6 +39,34 @@ services:
     ports:
       - '${MAILPIT_WEB_PORT:-8026}:8025'
       - '${MAILPIT_SMTP_PORT:-1026}:1025'
+
+  preparar:
+    build: { context: ., target: herramientas }
+    environment: *entorno
+    command: ['sh', '-c', 'pnpm db:migrate && pnpm db:seed']
+    depends_on:
+      db: { condition: service_healthy }
+    profiles: [completo]
+
+  app:
+    build: { context: ., target: app }
+    environment: *entorno
+    ports:
+      - '${APP_PORT:-3030}:3030'
+    depends_on:
+      preparar: { condition: service_completed_successfully }
+      mailpit: { condition: service_started }
+    profiles: [completo]
+
+  cron:
+    build: { context: ., target: herramientas }
+    environment:
+      <<: *entorno
+      APP_URL: http://app:3030
+    command: ['pnpm', 'cron']
+    depends_on:
+      app: { condition: service_started }
+    profiles: [completo]
 
 volumes:
   db:
