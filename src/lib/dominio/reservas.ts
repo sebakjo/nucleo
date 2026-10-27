@@ -1,7 +1,8 @@
-import { and, eq, inArray } from 'drizzle-orm'
+import { and, eq, gt, inArray, lt, ne, sql } from 'drizzle-orm'
 import type { DB, Tx } from '@/db'
-import { clases, listaEspera, reservas, type Rol } from '@/db/schema'
+import { clases, listaEspera, reservas, tiposClase, type Rol } from '@/db/schema'
 import { encolarEmail } from '@/lib/email/outbox'
+import { diaSemana, hora } from '@/lib/tiempo'
 import { crearCreditoSuelto, devolverCredito, moverCredito, packParaClase, saldoCreditos } from './creditos'
 import {
   bloquearClase,
@@ -14,7 +15,16 @@ import {
 import { ErrorDominio } from './errores'
 import { asignarLugaresLiberados } from './lista-espera'
 import { precioClaseSuelta } from './precios'
-import { evaluarCancelacion, limiteCancelacionSinCosto, vencimientoRetencion } from './reglas'
+import {
+  evaluarCancelacion,
+  HORAS_CANCELACION_SIN_COSTO,
+  limiteCancelacionSinCosto,
+  sePuedeMover,
+  vencimientoRetencion,
+} from './reglas'
+
+/** Candado de la sala para mover clases (pg_advisory_xact_lock). */
+const CLAVE_SALA = 27_182_818
 
 export type MedioReserva = 'credito' | 'pago'
 
@@ -520,5 +530,103 @@ export async function cancelarClase(db: DB, datos: { claseId: string; ahora: Dat
       .set({ estado: 'retirada' })
       .where(and(eq(listaEspera.claseId, clase.id), inArray(listaEspera.estado, ['esperando', 'oferta'])))
     return activas.length
+  })
+}
+
+export type Reprogramacion = { avisados: number; iniciaEn: Date; tipo: string }
+
+/**
+ * Mueve una clase a otro horario. Las reservas, los reformers y la lista de espera quedan como
+ * estaban, y cada persona recibe un email con el horario nuevo.
+ *
+ * Solo con más de 12 horas de anticipación, antes y después del cambio: así quien reservó siempre
+ * puede cancelar sin costo si el horario nuevo no le sirve. El estudio tiene una sola sala, así que
+ * la clase no puede pisarse con otra.
+ */
+export async function reprogramarClase(
+  db: DB,
+  datos: { claseId: string; iniciaEn: Date; ahora: Date },
+): Promise<Reprogramacion> {
+  return db.transaction(async (tx) => {
+    // Un movimiento a la vez: dos admins no pueden ocupar el mismo hueco al mismo tiempo.
+    await tx.execute(sql`select pg_advisory_xact_lock(${CLAVE_SALA})`)
+    const clase = await bloquearClase(tx, datos.claseId)
+    if (clase.estado !== 'programada' || clase.sandbox) {
+      throw new ErrorDominio('DATOS_INVALIDOS', 'Solo se pueden mover clases programadas.')
+    }
+    if (!sePuedeMover(clase.iniciaEn, datos.ahora)) {
+      throw new ErrorDominio(
+        'DATOS_INVALIDOS',
+        `Faltan menos de ${HORAS_CANCELACION_SIN_COSTO} horas para esta clase: ya no se puede mover. Si hace falta, cancelala y se devuelven los créditos.`,
+      )
+    }
+    if (!sePuedeMover(datos.iniciaEn, datos.ahora)) {
+      throw new ErrorDominio(
+        'DATOS_INVALIDOS',
+        `El horario nuevo tiene que ser dentro de más de ${HORAS_CANCELACION_SIN_COSTO} horas, para que quien reservó pueda cancelar sin costo si no le sirve.`,
+      )
+    }
+    const detalle = await detalleClase(tx, clase.id)
+    if (datos.iniciaEn.getTime() === clase.iniciaEn.getTime()) {
+      return { avisados: 0, iniciaEn: clase.iniciaEn, tipo: detalle.tipo }
+    }
+    const terminaEn = new Date(
+      datos.iniciaEn.getTime() + (clase.terminaEn.getTime() - clase.iniciaEn.getTime()),
+    )
+
+    const [choca] = await tx
+      .select({ iniciaEn: clases.iniciaEn, tipo: tiposClase.nombre })
+      .from(clases)
+      .innerJoin(tiposClase, eq(tiposClase.id, clases.tipoClaseId))
+      .where(
+        and(
+          ne(clases.id, clase.id),
+          eq(clases.estado, 'programada'),
+          eq(clases.sandbox, false),
+          lt(clases.iniciaEn, terminaEn),
+          gt(clases.terminaEn, datos.iniciaEn),
+        ),
+      )
+      .limit(1)
+    if (choca) {
+      throw new ErrorDominio(
+        'DATOS_INVALIDOS',
+        `El ${diaSemana(choca.iniciaEn)} a las ${hora(choca.iniciaEn)} ya hay ${choca.tipo}. El estudio tiene una sola sala: elegí otro horario.`,
+      )
+    }
+
+    await tx.update(clases).set({ iniciaEn: datos.iniciaEn, terminaEn }).where(eq(clases.id, clase.id))
+
+    const limite = limiteCancelacionSinCosto(datos.iniciaEn).toISOString()
+    const base = {
+      clase: detalle.tipo,
+      instructor: detalle.instructor,
+      iniciaEn: datos.iniciaEn.toISOString(),
+      anterior: clase.iniciaEn.toISOString(),
+      limiteCancelacion: limite,
+    }
+    const conLugar = await tx
+      .select({ id: reservas.id, usuarioId: reservas.usuarioId, reformer: reservas.reformer })
+      .from(reservas)
+      .where(and(eq(reservas.claseId, clase.id), inArray(reservas.estado, ['pendiente_pago', 'confirmada'])))
+    const esperando = await tx
+      .select({ id: listaEspera.id, usuarioId: listaEspera.usuarioId })
+      .from(listaEspera)
+      .where(and(eq(listaEspera.claseId, clase.id), eq(listaEspera.estado, 'esperando')))
+    const avisos = [
+      ...conLugar.map((r) => ({ clave: `reserva:${r.id}`, usuarioId: r.usuarioId, reformer: r.reformer })),
+      ...esperando.map((e) => ({ clave: `espera:${e.id}`, usuarioId: e.usuarioId, reformer: null })),
+    ]
+    for (const a of avisos) {
+      const alumno = await datosUsuario(tx, a.usuarioId)
+      await encolarEmail(tx, {
+        plantilla: 'clase_reprogramada',
+        para: alumno.email,
+        usuarioId: alumno.id,
+        claveUnica: `clase_reprogramada:${a.clave}:${datos.iniciaEn.toISOString()}`,
+        datos: { ...base, nombre: alumno.nombre, reformer: a.reformer },
+      })
+    }
+    return { avisados: avisos.length, iniciaEn: datos.iniciaEn, tipo: detalle.tipo }
   })
 }

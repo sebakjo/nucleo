@@ -56,6 +56,9 @@ export default async function preparar() {
   const claseCancelar = await clase(5, '14:00')
   await reservarClase(db, { usuarioId: sofia.id, claseId: claseCancelar.id, medio: 'credito', ahora })
 
+  // Para arrastrar en la agenda: sola en su fila de las 16:00, así el resto de la fila son destinos libres.
+  const claseMover = await clase(3, '16:00')
+
   const claseLlena = await clase(4, '14:00')
   for (const a of alumnos) {
     await ajustarCreditos(db, { usuarioId: a.id, delta: 1, nota: 'e2e', actorId: admin.id, ahora })
@@ -71,6 +74,8 @@ export default async function preparar() {
         claseCancelar: claseCancelar.id,
         claseLlena: claseLlena.id,
         semanaLlena: claveDia(inicioDeSemana(claseLlena.iniciaEn)),
+        claseMover: claseMover.id,
+        semanaMover: claveDia(inicioDeSemana(claseMover.iniciaEn)),
       },
       null,
       2,

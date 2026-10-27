@@ -53,11 +53,20 @@ async function Contenido({ searchParams }: { searchParams: PageProps<'/admin/pag
 
   return (
     <div className="mt-6">
-      <p className="text-chico text-grafito-2">
-        Aprobado en total:{' '}
-        <span className="font-semibold text-grafito tabular">{precio(aprobados?.monto ?? 0)}</span>{' '}
-        <span className="tabular">en {aprobados?.n ?? 0} pagos</span>
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-chico text-grafito-2">
+          Aprobado en total:{' '}
+          <span className="font-semibold text-grafito tabular">{precio(aprobados?.monto ?? 0)}</span>{' '}
+          <span className="tabular">en {aprobados?.n ?? 0} pagos</span>
+        </p>
+        <a
+          href={`/admin/pagos/exportar${estado && ESTADO_PAGO[estado] ? `?estado=${estado}` : ''}`}
+          download
+          className="boton boton-secundario"
+        >
+          Descargar CSV
+        </a>
+      </div>
       <nav aria-label="Filtrar por estado" className="mt-4 flex flex-wrap gap-2">
         {FILTROS.map((f) => {
           const activo = (f.valor ?? undefined) === estado || (!f.valor && !ESTADO_PAGO[estado ?? ''])

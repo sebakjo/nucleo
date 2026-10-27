@@ -30,6 +30,7 @@ const NOMBRES: Record<NombrePlantilla, string> = {
   pack_comprado: 'Pack comprado',
   pago_tardio: 'Pago acreditado tarde',
   clase_cancelada: 'Clase cancelada por el estudio',
+  clase_reprogramada: 'Clase con horario nuevo',
 }
 
 const ESTADO_EMAIL: Record<string, { texto: string; tono: 'bien' | 'atencion' | 'error' | 'neutro' }> = {
@@ -72,6 +73,13 @@ function ejemplo(ahora: Date): DatosPorPlantilla {
     pack_comprado: { nombre: 'Sofía', pack: 'Pack de 8', creditos: 8, venceEn: en30Dias },
     pago_tardio: { ...clase, venceEn: en30Dias },
     clase_cancelada: { ...clase, creditoDevuelto: true },
+    clase_reprogramada: {
+      ...clase,
+      iniciaEn: sumarMinutos(inicio, 75).toISOString(),
+      anterior: inicio.toISOString(),
+      reformer: 3,
+      limiteCancelacion: limiteCancelacionSinCosto(sumarMinutos(inicio, 75)).toISOString(),
+    },
   }
 }
 

@@ -39,6 +39,14 @@ export function evaluarCancelacion(inicioClase: Date, ahora: Date): EvaluacionCa
   return { permitida: true, sinCosto: ahora.getTime() <= limite.getTime(), limite }
 }
 
+/**
+ * El estudio mueve una clase solo si empieza en más de 12 horas, y a un horario que también esté a
+ * más de 12 horas: así quien reservó siempre puede cancelar sin costo si el cambio no le sirve.
+ */
+export function sePuedeMover(inicio: Date, ahora: Date): boolean {
+  return inicio.getTime() - ahora.getTime() >= HORAS_CANCELACION_SIN_COSTO * HORA_MS
+}
+
 export function vencimientoRetencion(ahora: Date): Date {
   return new Date(ahora.getTime() + MINUTOS_RETENCION_PAGO * MINUTO_MS)
 }

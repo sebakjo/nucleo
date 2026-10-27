@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { pagarReserva, salirDeLaLista } from '@/app/acciones/reservas'
+import { AgregarAlCalendario } from '@/components/reserva/AgregarAlCalendario'
 import { BotonCancelar } from '@/components/reserva/BotonCancelar'
 import { CuentaRegresiva } from '@/components/reserva/CuentaRegresiva'
 import { precio } from '@/lib/dinero'
@@ -128,12 +129,15 @@ export function Proximas({
                         <CuentaRegresiva hasta={r.retenidaHasta!} />
                       </p>
                     ) : (
-                      <p className="text-chico text-grafito-2">
-                        Reformer {r.reformer} ·{' '}
-                        {ev.permitida && ev.sinCosto
-                          ? `cancelás sin costo hasta el ${diaSemana(limite)} ${hora(limite)}`
-                          : 'si cancelás ahora, el crédito se pierde'}
-                      </p>
+                      <>
+                        <p className="text-chico text-grafito-2">
+                          Reformer {r.reformer} ·{' '}
+                          {ev.permitida && ev.sinCosto
+                            ? `cancelás sin costo hasta el ${diaSemana(limite)} ${hora(limite)}`
+                            : 'si cancelás ahora, el crédito se pierde'}
+                        </p>
+                        <AgregarAlCalendario reservaId={r.id} className="mt-1" />
+                      </>
                     )}
                   </div>
                   <div className="flex gap-2">

@@ -6,6 +6,7 @@ import {
   crearInstructor,
   crearPlantilla,
   guardarPrecios,
+  moverClaseDesdeFormulario,
   type EstadoPanel,
 } from '@/app/acciones/admin'
 import { precio } from '@/lib/dinero'
@@ -292,6 +293,51 @@ export function FormularioPrecios({
           {enCurso ? 'Guardando…' : 'Guardar precios'}
         </button>
       </div>
+    </form>
+  )
+}
+
+/** Alternativa a arrastrar la clase en la agenda (WCAG 2.5.7: toda acción de arrastre tiene otra forma). */
+export function FormularioMover({
+  claseId,
+  dia,
+  hora,
+  minimo,
+}: {
+  claseId: string
+  dia: string
+  hora: string
+  minimo: string
+}) {
+  const [estado, accion, enCurso] = useActionState(moverClaseDesdeFormulario, null)
+  return (
+    <form action={accion} className="grid gap-3">
+      <input type="hidden" name="claseId" value={claseId} />
+      <div className="grid grid-cols-2 gap-3">
+        <Campo etiqueta="Día" id="mover-dia">
+          <input
+            id="mover-dia"
+            name="dia"
+            type="date"
+            min={minimo}
+            defaultValue={dia}
+            required
+            className="campo tabular"
+          />
+        </Campo>
+        <Campo etiqueta="Hora" id="mover-hora">
+          {/* key: un <select> no toma un defaultValue nuevo después de montarse. */}
+          <select key={hora} id="mover-hora" name="hora" defaultValue={hora} className="campo tabular">
+            {HORAS.map((h) => (
+              <option key={h}>{h}</option>
+            ))}
+          </select>
+        </Campo>
+      </div>
+      <Resultado estado={estado} />
+      <button type="submit" className="boton justify-self-start boton-secundario" disabled={enCurso}>
+        {enCurso ? 'Moviendo…' : 'Mover clase'}
+      </button>
     </form>
   )
 }

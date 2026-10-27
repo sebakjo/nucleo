@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import { Proximas } from '@/components/alumno/Proximas'
 import { misReservas } from '@/lib/consultas/alumno'
 import { exigirUsuario } from '@/lib/sesion'
-import { diaYMes, fechaCorta, hora } from '@/lib/tiempo'
+import { diaYMes, fechaCorta, hora, mes, mesCorto } from '@/lib/tiempo'
 
 export const metadata: Metadata = {
   title: 'Mis reservas',
@@ -155,6 +155,7 @@ async function Contenido() {
                   <tr key={m.id}>
                     <td className="py-2 pr-3 whitespace-nowrap text-grafito-2 tabular">
                       {fechaCorta(m.creadoEn)}
+                      {mes(m.creadoEn) !== mes(ahora) && ` ${mesCorto(m.creadoEn)}`}
                     </td>
                     <td className="py-2 pr-3">{MOTIVO[m.motivo]}</td>
                     <td

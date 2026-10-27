@@ -226,7 +226,8 @@ export async function fichaAlumno(id: string, ahora: Date) {
   return { alumno, historial, packs: susPacks, movimientos, pagos: susPagos, creditos }
 }
 
-export async function listarPagos(filtro: { estado?: string }) {
+/** Pagos más recientes primero; la página muestra 150 y la exportación, todos. */
+export async function listarPagos(filtro: { estado?: string; todos?: boolean }) {
   const estados = ['pendiente', 'en_proceso', 'aprobado', 'rechazado', 'cancelado', 'reembolsado'] as const
   const estado = estados.find((e) => e === filtro.estado)
   const filas = await db
@@ -243,12 +244,13 @@ export async function listarPagos(filtro: { estado?: string }) {
       idExterno: pagos.idExterno,
       usuarioId: pagos.usuarioId,
       nombre: user.name,
+      email: user.email,
     })
     .from(pagos)
     .innerJoin(user, eq(user.id, pagos.usuarioId))
     .where(estado ? eq(pagos.estado, estado) : undefined)
     .orderBy(desc(pagos.creadoEn))
-    .limit(150)
+    .limit(filtro.todos ? 100_000 : 150)
   const totales = await db
     .select({
       estado: pagos.estado,

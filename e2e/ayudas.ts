@@ -7,6 +7,8 @@ export type DatosE2E = {
   claseCancelar: string
   claseLlena: string
   semanaLlena: string
+  claseMover: string
+  semanaMover: string
 }
 
 export const datos = (): DatosE2E => JSON.parse(readFileSync('e2e/.datos.json', 'utf8'))

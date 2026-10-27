@@ -55,7 +55,7 @@ cada 10 minutos por IP. Después de correr, verifica en la base y muestra lo que
   Un lugar pendiente de pago queda retenido 10 minutos.
 - Packs de 4, 8 y 12 clases válidos por 30 días, con Mercado Pago Checkout Pro.
 - Mis reservas: cancelar sin costo hasta 12 horas antes (el crédito vuelve), lista de espera con
-  puesto y créditos con su vencimiento.
+  puesto, créditos con su vencimiento y cada clase como `.ics` para el calendario.
 - Lista de espera automática: cuando se libera un lugar, la primera persona con crédito queda
   reservada; si no tiene, recibe 30 minutos para pagar.
 - Recordatorio por email 24 horas antes y vista previa del mensaje de WhatsApp.
@@ -70,10 +70,14 @@ cada 10 minutos por IP. Después de correr, verifica en la base y muestra lo que
 
 - Agenda semanal densa con ocupación, lista de espera y panel lateral por clase: asistencia,
   cancelaciones con su consecuencia explicada, cancelar la clase entera.
+- Reprogramar arrastrando la clase a otro horario (o desde el panel lateral, sin arrastrar): las
+  reservas y los reformers se mantienen y cada persona recibe un email. Solo con más de 12 horas
+  de anticipación, para que quien reservó siempre pueda cancelar sin costo.
 - Plantillas semanales que generan las clases de las próximas 3 semanas y avisan si se superponen
   (el estudio tiene una sola sala).
 - Instructores, alumnos con su ficha (créditos, historial, ajustes manuales auditables), pagos con
-  su estado, precios, métricas de la semana y los mensajes que salieron.
+  su estado y exportación a CSV (lista para Excel en español), precios, métricas de la semana y los
+  mensajes que salieron.
 - Modo oscuro, recordado por navegador y aplicado antes de pintar.
 
 ![Agenda del panel en modo oscuro](screenshots/admin-agenda-oscuro.png)
@@ -89,7 +93,7 @@ cada 10 minutos por IP. Después de correr, verifica en la base y muestra lo que
 | Lighthouse móvil: accesibilidad    | 88            | 100 en las tres páginas                               |
 | Lighthouse móvil: SEO              | 90            | 100 en las tres páginas                               |
 | LCP / CLS (horarios vs. prototipo) | 3,2 s / 0,214 | 2,4 s / 0                                             |
-| Tests automáticos                  | 0             | 48 de Vitest (Postgres real) y 5 flujos de Playwright |
+| Tests automáticos                  | 0             | 59 de Vitest (Postgres real) y 7 flujos de Playwright |
 
 Reportes completos en [`docs/lighthouse`](lighthouse). Los números de `/caso` salen de los mismos
 archivos ([`docs/metricas`](metricas)), así que no se pueden desincronizar del repo.
@@ -112,7 +116,6 @@ archivos ([`docs/metricas`](metricas)), así que no se pueden desincronizar del 
 
 ## Qué seguiría
 
-- Reprogramar arrastrando clases en la agenda, exportar alumnos y pagos a CSV, y agregar la clase
-  al calendario con un `.ics`.
 - Mandar el recordatorio por WhatsApp Business (hoy es una vista previa).
+- Exportar también alumnos y asistencia, y un calendario suscribible (feed `.ics`) por alumno.
 - Reintentos con backoff para el envío de emails y alertas si una tarea programada falla.

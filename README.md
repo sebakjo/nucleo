@@ -23,15 +23,16 @@ Buenos Aires (6 spots per class). It takes a single-file HTML prototype with 7 r
   the spot for 10 minutes.
 - "My bookings" with a 12-hour free-cancellation rule, automatic waitlist promotion, 24-hour email
   reminders (plus a WhatsApp preview), and student / instructor / admin roles with demo logins.
-- Admin panel: agenda, recurring class templates, instructors, students, payments, metrics, email
-  previews and dark mode.
+- Admin panel: agenda (drag a class to reschedule it; booked students get an email), recurring
+  class templates, instructors, students, payments with CSV export, metrics, email previews and
+  dark mode. Students can add a booked class to their calendar (.ics).
 - `/caso`, a case study page with a before/after slider and a **live simulation**: 20 people book
   the same 6-spot class at the same time. The prototype code sells 20 spots; the production code,
   running against real PostgreSQL, sells 6 and puts 14 on the waitlist.
 
 Stack: Next.js 16 (App Router), strict TypeScript, Tailwind CSS 4, PostgreSQL 17 + Drizzle
-migrations, Better Auth, Radix primitives, React Email + Mailpit. Quality: 48 Vitest tests
-(including a concurrency test against real Postgres and signed webhook tests), 5 Playwright
+migrations, Better Auth, Radix primitives, React Email + Mailpit. Quality: 59 Vitest tests
+(including a concurrency test against real Postgres and signed webhook tests), 7 Playwright
 end-to-end flows, Lighthouse mobile ≥ 97 performance and 100 in the other categories, CI on GitHub
 Actions.
 
@@ -43,17 +44,17 @@ a simulated checkout, which can never be enabled in production.
 
 ## Qué hay para ver
 
-| Ruta                                    | Qué es                                                                                                                     |
-| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| [`/`](http://localhost:3030)            | Horarios de la semana con disponibilidad en tiempo real y lista de espera cuando la clase está completa.                   |
-| `/clase/[id]`                           | Reserva en 3 pasos: elegís la clase, confirmás con crédito o pagando, y ves tu lugar.                                      |
-| `/packs`                                | Packs de 4, 8 y 12 clases, válidos por 30 días.                                                                            |
-| `/mis-reservas`                         | Próximas clases, cancelación con la regla de 12 horas, lista de espera, créditos y pagos.                                  |
-| `/instructor`                           | Las clases de quien enseña, con la lista de cada una y la asistencia.                                                      |
-| `/admin`                                | Panel del estudio: agenda, plantillas, instructores, alumnos, pagos, métricas, precios y mensajes. Tiene modo oscuro.      |
-| [`/antes`](http://localhost:3030/antes) | El prototipo original, sin tocar salvo los comentarios `// PROBLEMA:`.                                                     |
-| [`/caso`](http://localhost:3030/caso)   | Caso de estudio: comparador antes/después, los 7 problemas y la simulación de 20 reservas simultáneas contra la base real. |
-| [Mailpit](http://localhost:8026)        | Los emails que manda la app en local (confirmaciones, recordatorios, lista de espera).                                     |
+| Ruta                                    | Qué es                                                                                                                                                |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`/`](http://localhost:3030)            | Horarios de la semana con disponibilidad en tiempo real y lista de espera cuando la clase está completa.                                              |
+| `/clase/[id]`                           | Reserva en 3 pasos: elegís la clase, confirmás con crédito o pagando, y ves tu lugar.                                                                 |
+| `/packs`                                | Packs de 4, 8 y 12 clases, válidos por 30 días.                                                                                                       |
+| `/mis-reservas`                         | Próximas clases (con «Agregar al calendario»), cancelación con la regla de 12 horas, lista de espera, créditos y pagos.                               |
+| `/instructor`                           | Las clases de quien enseña, con la lista de cada una y la asistencia.                                                                                 |
+| `/admin`                                | Panel del estudio: agenda (se reprograma arrastrando), plantillas, instructores, alumnos, pagos (con CSV), métricas, precios y mensajes. Modo oscuro. |
+| [`/antes`](http://localhost:3030/antes) | El prototipo original, sin tocar salvo los comentarios `// PROBLEMA:`.                                                                                |
+| [`/caso`](http://localhost:3030/caso)   | Caso de estudio: comparador antes/después, los 7 problemas y la simulación de 20 reservas simultáneas contra la base real.                            |
+| [Mailpit](http://localhost:8026)        | Los emails que manda la app en local (confirmaciones, recordatorios, lista de espera).                                                                |
 
 Capturas de todas las pantallas en [`docs/screenshots`](docs/screenshots), caso completo en
 [`docs/caso-de-estudio.md`](docs/caso-de-estudio.md) y guion del video de 90 segundos en
@@ -249,6 +250,10 @@ sequenceDiagram
 - **Tareas programadas idempotentes.** `/api/cron/[tarea]` exige `Authorization: Bearer
 $CRON_SECRET` (comparación en tiempo constante). Ninguna regla depende de que el cron sea
   puntual: una retención vencida deja de contar como ocupada en la misma consulta que cuenta.
+- **Mover una clase no la duplica.** Cada clase generada guarda el horario de su plantilla
+  (`generada_para`) y la restricción única usa ese campo: si el estudio la arrastra a otro horario,
+  el generador no vuelve a crearla en el original. Mover exige más de 12 horas antes y después del
+  cambio, respeta la sala única y avisa por email a quien reservó y a la lista de espera.
 
 ### Por qué Better Auth
 
@@ -297,14 +302,16 @@ pnpm test:e2e                    # Playwright: build de producción en el puerto
 pnpm lighthouse http://localhost:3030   # con la app en producción (pnpm build && pnpm start)
 ```
 
-- **48 tests de Vitest**: reglas (12 horas, retención, vencimientos), créditos, lista de espera,
+- **59 tests de Vitest**: reglas (12 horas, retención, vencimientos), créditos, lista de espera,
   tareas programadas, retención de 10 minutos y pago tardío, elección del proveedor de pagos,
+  reprogramar clases (sala única, 12 horas, sin regenerar el horario original), CSV y `.ics`,
   webhook (firma inválida, notificación duplicada, monto distinto del que definió el servidor,
   notificaciones fuera de orden) y **concurrencia**: 20 reservas simultáneas contra Postgres real,
   6 confirmadas y 14 rechazadas, y la misma persona tocando «Reservar» 20 veces obtiene una sola.
-- **5 flujos de Playwright**: reservar con crédito, pagar la clase suelta con el checkout simulado,
-  cancelar con más de 12 horas y recuperar el crédito, la lista de espera (cuando se libera un
-  lugar pasa a la primera persona) y crear una plantilla en el panel que aparece en los horarios.
+- **7 flujos de Playwright**: reservar con crédito (y descargar el `.ics`), pagar la clase suelta
+  con el checkout simulado, cancelar con más de 12 horas y recuperar el crédito, la lista de espera
+  (cuando se libera un lugar pasa a la primera persona), crear una plantilla en el panel que
+  aparece en los horarios, descargar los pagos en CSV y arrastrar una clase a otro horario.
 - **Lighthouse móvil** (mediana de 3 corridas, reportes en [`docs/lighthouse`](docs/lighthouse)):
 
   | Página                | Rendimiento | Accesibilidad | Buenas prácticas | SEO |

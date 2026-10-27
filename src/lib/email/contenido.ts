@@ -165,6 +165,29 @@ const CONSTRUCTORES: Constructores = {
     ],
     accion: { texto: 'Elegir otro horario', url: urlApp() },
   }),
+  clase_reprogramada: (d) => {
+    const antes = new Date(d.anterior)
+    const ahora = new Date(d.iniciaEn)
+    const limite = new Date(d.limiteCancelacion)
+    return {
+      asunto: `Tu clase del ${cuando(d.anterior)} pasa al ${cuando(d.iniciaEn)}`,
+      previa: `${d.clase} con ${primerNombre(d.instructor)}, mismo lugar`,
+      titulo: `Cambiamos el horario de tu clase`,
+      parrafos: [
+        `Hola, ${primerNombre(d.nombre)}. ${d.clase} con ${primerNombre(d.instructor)} pasa del ${fechaLarga(antes)} a las ${hora(antes)} al ${fechaLarga(ahora)} a las ${hora(ahora)}.`,
+        d.reformer === null
+          ? 'Seguís en la lista de espera, en el mismo puesto. Si el horario nuevo no te sirve, podés salir de la lista desde Mis reservas.'
+          : `Tu lugar sigue siendo el reformer ${d.reformer}. Si el horario nuevo no te sirve, cancelá sin costo hasta el ${fechaLarga(limite)} a las ${hora(limite)}.`,
+      ],
+      detalle: [
+        ['Clase', d.clase],
+        ['Antes', `${fechaLarga(antes)}, ${hora(antes)}`],
+        ['Ahora', `${fechaLarga(ahora)}, ${hora(ahora)}`],
+        ...(d.reformer === null ? [] : [['Reformer', String(d.reformer)] as [string, string]]),
+      ],
+      accion: { texto: 'Ver mis reservas', url: `${urlApp()}/mis-reservas` },
+    }
+  },
 }
 
 export function contenidoDe<K extends NombrePlantilla>(plantilla: K, datos: DatosPorPlantilla[K]): Contenido {

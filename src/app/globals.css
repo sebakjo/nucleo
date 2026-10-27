@@ -225,6 +225,11 @@
   background-image: repeating-linear-gradient(-45deg, var(--rosa) 0 4px, var(--rosa-tenue) 4px 8px);
 }
 
+/* Mientras se arrastra una clase en la agenda, los horarios libres se marcan como destino. */
+:root[data-arrastrando] [data-destino] {
+  border-color: var(--linea);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .carril-llenandose,
   .esqueleto {

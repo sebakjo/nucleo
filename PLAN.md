@@ -95,3 +95,48 @@ Cada fase cierra con tests en verde, capturas revisadas y un commit.
 - **La retención de 10 minutos no depende del cron**: una reserva pendiente cuenta como ocupada solo mientras `retenida_hasta > now()`. El cron la marca vencida y promueve la lista de espera, pero la disponibilidad ya es correcta aunque el cron se atrase.
 - **Lista de espera con prioridad**: cuando se libera un lugar, se asigna a la lista antes de aceptar reservas nuevas; si el primero no tiene créditos, el lugar le queda retenido 30 minutos para pagar.
 - **Rate limit en Postgres** (ventana fija con upsert) para que valga igual con varias instancias serverless.
+
+## Checklist final contra el brief
+
+Revisado el 27 de octubre de 2026, con el build de producción, 59 tests de Vitest y 7 flujos de
+Playwright en verde.
+
+**Imprescindible**
+
+- [x] `DESIGN.md` antes del código, con las decisiones tomadas durante la construcción al final.
+- [x] Marca Núcleo, 6 lugares por clase y el aviso «Proyecto de demostración: los pagos funcionan en modo de prueba» en todas las pantallas.
+- [x] `/antes`: un solo HTML con los 7 `// PROBLEMA:`.
+- [x] Horarios semanales con disponibilidad en tiempo real (se actualiza cada 10 s sin recargar).
+- [x] Reserva en 3 pasos: elegí la clase, confirmá, pagá o tu lugar.
+- [x] Packs de 4, 8 y 12 clases, válidos 30 días, con Mercado Pago Checkout Pro.
+- [x] La reserva pendiente de pago retiene el lugar 10 minutos (sin depender del cron).
+- [x] Mis reservas con la regla de cancelación de 12 horas.
+- [x] Lista de espera con promoción automática (con crédito queda reservada; sin crédito, 30 minutos para pagar).
+- [x] Recordatorio por email 24 horas antes y vista previa del mensaje de WhatsApp.
+- [x] Roles alumno, instructor y admin, con un botón de cuenta demo para cada uno.
+- [x] Panel: agenda, plantillas, instructores, alumnos, pagos, métricas, precios, mensajes y modo oscuro.
+- [x] `/caso`: comparador antes/después, tabla de los 7 problemas, simulación en vivo (prototipo 20 de 6, producción 6 y 14 en espera) sobre una clase aislada que se reinicia en cada corrida, con límite de uso, y métricas reales leídas de `docs/metricas`.
+- [x] Stack: Next.js App Router, TypeScript estricto, Tailwind, PostgreSQL con migraciones de Drizzle, Better Auth (justificado en el README), Radix re-estilado, React Email + Mailpit, cron protegido, UTC en la base y hora de Buenos Aires en pantalla.
+- [x] Vitest con test de concurrencia contra Postgres real y tests del webhook.
+- [x] Playwright con al menos 5 flujos (hay 7).
+- [x] Lighthouse móvil ≥ 90 en las 4 categorías para horarios (98/100/100/100), reserva (97/100/100/100) y `/caso` (97/100/100/100); `/antes` medido (76/88/100/90). Reportes en `docs/lighthouse`.
+- [x] WCAG AA (contraste calculado en los dos temas, foco visible, teclado, movimiento reducido) y responsive de 360 a 1440 px.
+- [x] CI en GitHub Actions.
+- [x] README en español con resumen en inglés, diagramas Mermaid (arquitectura y flujo de reserva y pago), un comando para correr, variables, cuentas demo y cómo probar pagos.
+- [x] `docs/screenshots`, `docs/caso-de-estudio.md`, `docs/guion-video.md` (90 s) y `docs/deploy.md` con costos.
+- [x] Seguridad: ningún secreto en el repo, `.env.example` completo, rol verificado en cada acción del servidor, cron con secreto, límite de peticiones en reservas, pagos, login, panel y simulación.
+- [x] Proveedor de pagos simulado: forzado en `test`, respaldo en `local` sin credenciales, imposible en producción (con test).
+- [x] Modo simulado documentado en el README (pagos, emails, WhatsApp, cron).
+- [x] Sin datos de contacto personales dentro de la app.
+- [x] Cada fase cerró con tests en verde, capturas revisadas y un commit.
+
+**Opcional** (después de lo imprescindible)
+
+- [x] Reprogramar arrastrando en la agenda, con alternativa sin arrastrar en el panel lateral.
+- [x] Exportar pagos a CSV.
+- [x] Agregar la clase al calendario (`.ics`).
+
+**Fuera del alcance de la demo**
+
+- Deploy público: las instrucciones y costos están en `docs/deploy.md`; publicar requiere cuentas propias (Vercel, Neon, Resend, Mercado Pago).
+- Envío real por WhatsApp (requiere WhatsApp Business): hoy es una vista previa.

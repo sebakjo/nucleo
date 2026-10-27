@@ -16,7 +16,7 @@ export function CuentasDemo({ volver }: { volver: string }) {
           <input type="hidden" name="volver" value={volver} />
           <button
             type="submit"
-            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+            className="boton w-full flex-col items-start gap-0.5 boton-secundario py-2.5 text-left"
           >
             <span>Entrar como alumno demo</span>
             <span className="text-chico font-normal text-grafito-2">Sofía, con créditos y reservas</span>
@@ -27,7 +27,7 @@ export function CuentasDemo({ volver }: { volver: string }) {
           <input type="hidden" name="volver" value={volver} />
           <button
             type="submit"
-            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+            className="boton w-full flex-col items-start gap-0.5 boton-secundario py-2.5 text-left"
           >
             <span>Entrar como instructor demo</span>
             <span className="text-chico font-normal text-grafito-2">Lucía, sus clases y asistencia</span>
@@ -38,7 +38,7 @@ export function CuentasDemo({ volver }: { volver: string }) {
           <input type="hidden" name="volver" value={volver} />
           <button
             type="submit"
-            className="boton w-full justify-between boton-secundario text-left max-sm:flex-col max-sm:items-start max-sm:gap-0.5 max-sm:py-2.5"
+            className="boton w-full flex-col items-start gap-0.5 boton-secundario py-2.5 text-left"
           >
             <span>Entrar como admin demo</span>
             <span className="text-chico font-normal text-grafito-2">Panel del estudio</span>

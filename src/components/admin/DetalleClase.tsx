@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { Carriles } from '@/components/Carriles'
 import { cancelarClaseComoAdmin, cancelarReservaComoAdmin, marcarAsistio } from '@/app/acciones/admin'
 import type { detalleClaseAdmin } from '@/lib/consultas/admin'
-import { evaluarCancelacion, HORAS_CANCELACION_SIN_COSTO } from '@/lib/dominio/reglas'
-import { hora } from '@/lib/tiempo'
+import { evaluarCancelacion, HORAS_CANCELACION_SIN_COSTO, sePuedeMover } from '@/lib/dominio/reglas'
+import { claveDia, hora } from '@/lib/tiempo'
 import { BotonAsistencia, ConfirmarAccion } from './Acciones'
+import { FormularioMover } from './Formularios'
 import { Insignia } from './ui'
 
 type Detalle = NonNullable<Awaited<ReturnType<typeof detalleClaseAdmin>>>
@@ -40,6 +41,7 @@ export function DetalleClase({ detalle, ahora }: { detalle: Detalle; ahora: Date
   const empezo = clase.iniciaEn <= ahora
   const asistenciaAbierta = !cancelada && clase.iniciaEn.getTime() - MARGEN_ASISTENCIA_MS <= ahora.getTime()
   const porReformer = new Map(activas.map((r) => [r.reformer, r]))
+  const movible = !cancelada && sePuedeMover(clase.iniciaEn, ahora)
 
   return (
     <div className="grid gap-7">
@@ -147,6 +149,24 @@ export function DetalleClase({ detalle, ahora }: { detalle: Detalle; ahora: Date
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {movible && (
+        <section aria-labelledby="titulo-mover" className="border-t border-linea pt-5">
+          <h3 id="titulo-mover" className="text-subtitulo font-semibold">
+            Mover a otro horario
+          </h3>
+          <p className="mt-1 mb-3 text-chico text-grafito-2">
+            También podés arrastrarla en la agenda. Las reservas y los reformers se mantienen, y avisamos por
+            email a quien reservó y a la lista de espera.
+          </p>
+          <FormularioMover
+            claseId={clase.id}
+            dia={claveDia(clase.iniciaEn)}
+            hora={hora(clase.iniciaEn)}
+            minimo={claveDia(new Date(ahora.getTime() + HORAS_CANCELACION_SIN_COSTO * 3_600_000))}
+          />
         </section>
       )}
 

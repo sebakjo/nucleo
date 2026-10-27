@@ -12,6 +12,7 @@ import {
   cancelarClase,
   cancelarReserva,
   marcarAsistencia,
+  reprogramarClase,
   type CancelacionHecha,
 } from '@/lib/dominio/reservas'
 import { generarClases } from '@/lib/dominio/tareas'
@@ -19,6 +20,7 @@ import { despacharEmails } from '@/lib/email/despachar'
 import { despuesDeResponder } from '@/lib/despues'
 import { consumirLimite } from '@/lib/limite'
 import { usuarioActual, type UsuarioSesion } from '@/lib/sesion'
+import { diaDelMes, diaSemana, hora, instanteLocal } from '@/lib/tiempo'
 
 /** Resultado de los formularios del panel: un mensaje que dice qué pasó. */
 export type EstadoPanel = { ok: boolean; mensaje: string } | null
@@ -65,6 +67,40 @@ export async function cancelarClaseComoAdmin(claseId: string): Promise<Resultado
     refresh()
     return n
   })
+}
+
+async function mover(claseId: string, iniciaEn: Date): Promise<Resultado<string>> {
+  return conRol(['admin'], async () => {
+    const r = await reprogramarClase(db, { claseId, iniciaEn, ahora: new Date() })
+    despuesDeResponder(() => despacharEmails(db))
+    refresh()
+    const n = r.avisados
+    const aviso =
+      n === 0
+        ? 'No tenía reservas ni lista de espera.'
+        : `Le avisamos por email a ${n === 1 ? '1 persona' : `${n} personas`}.`
+    return `Moviste ${r.tipo} al ${diaSemana(r.iniciaEn)} ${diaDelMes(r.iniciaEn)} a las ${hora(r.iniciaEn)}. ${aviso}`
+  })
+}
+
+/** Arrastrar una clase a otro horario de la agenda. */
+export async function moverClase(claseId: string, inicioIso: string): Promise<Resultado<string>> {
+  const inicio = z.iso.datetime().safeParse(inicioIso)
+  if (!Id.safeParse(claseId).success || !inicio.success) return invalido
+  return mover(claseId, new Date(inicio.data))
+}
+
+const Mover = z.object({
+  claseId: Id,
+  dia: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  hora: z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/),
+})
+
+/** La misma acción desde el panel lateral, para quien no arrastra (teclado, lector de pantalla). */
+export async function moverClaseDesdeFormulario(_: EstadoPanel, form: FormData): Promise<EstadoPanel> {
+  const datos = Mover.safeParse(Object.fromEntries(form))
+  if (!datos.success) return { ok: false, mensaje: 'Elegí el día y la hora nuevos.' }
+  return comoEstado(await mover(datos.data.claseId, instanteLocal(datos.data.dia, datos.data.hora)))
 }
 
 /** Asistencia: la marca el admin o quien da la clase. */

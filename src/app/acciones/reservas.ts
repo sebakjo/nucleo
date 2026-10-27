@@ -47,7 +47,12 @@ function invalido<T>(): Resultado<T> {
   return { ok: false, codigo: 'DATOS_INVALIDOS', mensaje: MENSAJES.DATOS_INVALIDOS }
 }
 
-export type ReservaConfirmada = { tipo: 'confirmada'; reformer: number; creditosRestantes: number | null }
+export type ReservaConfirmada = {
+  tipo: 'confirmada'
+  reservaId: string
+  reformer: number
+  creditosRestantes: number | null
+}
 export type ReservaAPagar = { tipo: 'pago'; urlPago: string }
 
 export async function reservar(
@@ -61,7 +66,12 @@ export async function reservar(
     if (hecha.estado === 'confirmada') {
       despuesDeResponder(() => despacharEmails(db))
       refresh()
-      return { tipo: 'confirmada', reformer: hecha.reformer, creditosRestantes: hecha.creditosRestantes }
+      return {
+        tipo: 'confirmada',
+        reservaId: hecha.reservaId,
+        reformer: hecha.reformer,
+        creditosRestantes: hecha.creditosRestantes,
+      }
     }
     const { urlPago } = await conProveedor(() =>
       iniciarPagoReserva(db, proveedorPagos(), { reservaId: hecha.reservaId, usuarioId: u.id, ahora }),

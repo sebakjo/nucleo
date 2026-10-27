@@ -28,6 +28,13 @@ export function instanteDePlantilla(lunes: Date, diaSemana: number, hora: string
   return new Date(new TZDate(dia.getFullYear(), dia.getMonth(), dia.getDate(), h, m, ZONA).getTime())
 }
 
+/** Instante de un día ("2026-10-30") y una hora ("18:00") de Buenos Aires. */
+export function instanteLocal(dia: string, hhmm: string): Date {
+  const [a, m, d] = dia.split('-').map(Number)
+  const [h, min] = hhmm.split(':').map(Number)
+  return new Date(new TZDate(a, m - 1, d, h, min, ZONA).getTime())
+}
+
 /** Día ISO (1 = lunes … 7 = domingo) en Buenos Aires. */
 export function diaIso(fecha: Date): number {
   const d = new TZDate(fecha.getTime(), ZONA).getDay()

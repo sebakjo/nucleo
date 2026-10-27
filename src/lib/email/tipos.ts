@@ -24,6 +24,12 @@ export type DatosPorPlantilla = {
   pack_comprado: { nombre: string; pack: string; creditos: number; venceEn: string }
   pago_tardio: DatosClaseEmail & { venceEn: string }
   clase_cancelada: DatosClaseEmail & { creditoDevuelto: boolean }
+  /** Para quien tiene lugar (con reformer) o está en la lista de espera (reformer null). */
+  clase_reprogramada: DatosClaseEmail & {
+    anterior: string
+    reformer: number | null
+    limiteCancelacion: string
+  }
 }
 
 export type NombrePlantilla = keyof DatosPorPlantilla

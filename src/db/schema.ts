@@ -158,6 +158,8 @@ export const clases = pgTable(
       .references(() => instructores.id),
     iniciaEn: fecha(),
     terminaEn: fecha(),
+    /** Horario de la plantilla que la generó. No cambia si se reprograma: así no se genera otra vez. */
+    generadaPara: fechaOpcional(),
     cupo: smallint().notNull().default(6),
     estado: estadoClase().notNull().default('programada'),
     /** Clase aislada para la simulación de /caso: no aparece en horarios ni en métricas. */
@@ -165,7 +167,7 @@ export const clases = pgTable(
     creadaEn: creadoEn(),
   },
   (t) => [
-    uniqueIndex('clase_por_plantilla').on(t.plantillaId, t.iniciaEn),
+    uniqueIndex('clase_por_plantilla').on(t.plantillaId, t.generadaPara),
     index().on(t.iniciaEn),
     check('clase_cupo', sql`${t.cupo} between 1 and 6`),
   ],

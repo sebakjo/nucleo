@@ -15,12 +15,13 @@ import {
   MINUTOS_RETENCION_PAGO,
 } from '@/lib/dominio/reglas'
 import { diaSemana, diaYMes, fechaLarga, hora } from '@/lib/tiempo'
+import { AgregarAlCalendario } from './AgregarAlCalendario'
 import { BotonCancelar } from './BotonCancelar'
 import { CuentaRegresiva } from './CuentaRegresiva'
 
 type Props = DetalleReserva & { ahora: string; nombreUsuario: string | null; volver: string }
 
-type Confirmacion = { titulo: string; detalle: string; reformer: number }
+type Confirmacion = { titulo: string; detalle: string; reformer: number; reservaId: string }
 
 const mayuscula = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
@@ -121,6 +122,7 @@ export function Reserva({
             ? `Tu lugar es el reformer ${r.valor.reformer}.`
             : `${quedan === 1 ? 'Te queda 1 crédito' : `Te quedan ${quedan} créditos`}. Tu lugar es el reformer ${r.valor.reformer}.`,
         reformer: r.valor.reformer,
+        reservaId: r.valor.reservaId,
       })
     })
 
@@ -166,6 +168,7 @@ export function Reserva({
           Te mandamos la confirmación por email. Podés cancelar sin costo hasta el {fechaLarga(limite)} a las{' '}
           {hora(limite)}.
         </p>
+        <AgregarAlCalendario reservaId={confirmacion.reservaId} className="mt-2" />
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/mis-reservas" className="boton boton-principal">
             Ver mis reservas
@@ -206,6 +209,7 @@ export function Reserva({
         <p className="mt-1 text-grafito-2">
           Podés cancelar sin costo hasta el {fechaLarga(limite)} a las {hora(limite)}.
         </p>
+        <AgregarAlCalendario reservaId={mia.reservaId} className="mt-2" />
         <div className="mt-5 flex flex-wrap gap-3">
           <Link href="/mis-reservas" className="boton boton-secundario">
             Ver mis reservas

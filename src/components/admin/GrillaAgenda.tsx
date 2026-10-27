@@ -1,8 +1,18 @@
 import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { Carriles } from '@/components/Carriles'
 import type { ClaseAgenda } from '@/lib/consultas/admin'
-import { estadoDeCupo } from '@/lib/dominio/reglas'
-import { claveDia, diaDelMes, diaIso, diaSemana, diaSemanaCorto, hora } from '@/lib/tiempo'
+import { estadoDeCupo, sePuedeMover } from '@/lib/dominio/reglas'
+import {
+  claveDia,
+  diaDelMes,
+  diaIso,
+  diaSemana,
+  diaSemanaCorto,
+  hora,
+  instanteDePlantilla,
+} from '@/lib/tiempo'
+import { Arrastrable, Destino } from './ArrastreAgenda'
 import { iniciales } from './ui'
 
 type Props = { clases: ClaseAgenda[]; ahora: Date; lunes: Date; semana: string; seleccionada: string | null }
@@ -96,7 +106,9 @@ export function GrillaAgenda({ clases, ahora, lunes, semana, seleccionada }: Pro
   return (
     <>
       <table className="hidden w-full table-fixed border-separate border-spacing-1 md:table">
-        <caption className="sr-only">Agenda de la semana. Elegí una clase para ver quién viene.</caption>
+        <caption className="sr-only">
+          Agenda de la semana. Elegí una clase para ver quién viene o moverla a otro horario.
+        </caption>
         <thead>
           <tr>
             <th scope="col" className="w-14">
@@ -120,11 +132,31 @@ export function GrillaAgenda({ clases, ahora, lunes, semana, seleccionada }: Pro
               <th scope="row" className="pt-1.5 pr-1 text-left align-top text-chico font-semibold tabular">
                 {h}
               </th>
-              {dias.map((d) => {
+              {dias.map((d, i) => {
                 const c = porDia.get(d.clave)?.find((x) => hora(x.iniciaEn) === h)
+                const inicio = instanteDePlantilla(lunes, i + 1, h)
+                let contenido: ReactNode = null
+                if (c) {
+                  const bloque = (
+                    <Bloque c={c} ahora={ahora} href={href(c.id)} activa={c.id === seleccionada} />
+                  )
+                  contenido =
+                    c.estado === 'programada' && sePuedeMover(c.iniciaEn, ahora) ? (
+                      <Arrastrable claseId={c.id}>{bloque}</Arrastrable>
+                    ) : (
+                      bloque
+                    )
+                } else if (sePuedeMover(inicio, ahora)) {
+                  contenido = (
+                    <Destino
+                      inicio={inicio.toISOString()}
+                      etiqueta={`Soltá una clase acá para moverla al ${diaSemana(inicio)} ${diaDelMes(inicio)} a las ${h}`}
+                    />
+                  )
+                }
                 return (
                   <td key={d.clave} className="align-top">
-                    {c && <Bloque c={c} ahora={ahora} href={href(c.id)} activa={c.id === seleccionada} />}
+                    {contenido}
                   </td>
                 )
               })}

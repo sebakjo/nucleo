@@ -117,7 +117,8 @@ export async function vencerPacks(db: DB, ahora: Date) {
 
 /**
  * Genera las clases de las plantillas activas desde la semana de `desde` hasta `semanas` semanas
- * adelante. La restricción única (plantilla, inicio) hace que repetirla no duplique nada.
+ * adelante. La restricción única (plantilla, horario generado) hace que repetirla no duplique nada,
+ * aunque una clase se haya movido a otro horario.
  */
 export async function generarClases(db: DB, ahora: Date, opciones: { desde?: Date; semanas?: number } = {}) {
   const activas = await db
@@ -146,6 +147,7 @@ export async function generarClases(db: DB, ahora: Date, opciones: { desde?: Dat
         instructorId: p.instructorId,
         iniciaEn: inicia,
         terminaEn: sumarMinutos(inicia, p.duracionMin),
+        generadaPara: inicia,
         cupo: p.cupo,
       })
     }
@@ -154,7 +156,7 @@ export async function generarClases(db: DB, ahora: Date, opciones: { desde?: Dat
   const creadas = await db
     .insert(clases)
     .values(filas)
-    .onConflictDoNothing({ target: [clases.plantillaId, clases.iniciaEn] })
+    .onConflictDoNothing({ target: [clases.plantillaId, clases.generadaPara] })
     .returning({ id: clases.id })
   return { creadas: creadas.length }
 }
