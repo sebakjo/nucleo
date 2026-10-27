@@ -28,7 +28,9 @@
   color-scheme: light;
 }
 
-[data-tema='oscuro'] {
+/* El panel guarda su tema en <html data-tema-panel>, que un script fija antes de pintar. */
+[data-tema='oscuro'],
+:root[data-tema-panel='oscuro'] #panel {
   --cal: #121a1f;
   --superficie: #1a242b;
   --linea: #2c3942;
@@ -150,7 +152,8 @@
 @utility boton-principal {
   background: var(--eucalipto);
   color: #fff;
-  [data-tema='oscuro'] & {
+  [data-tema='oscuro'] &,
+  :root[data-tema-panel='oscuro'] #panel & {
     color: #0f1a16;
   }
   &:hover:not(:disabled) {

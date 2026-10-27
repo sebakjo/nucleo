@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { db } from '@/db'
 import { movimientosCredito, packs, reservas } from '@/db/schema'
-import { vencerPacks } from '@/lib/dominio/creditos'
+import { ajustarCreditos, vencerPacks } from '@/lib/dominio/creditos'
 import { ErrorDominio } from '@/lib/dominio/errores'
 import { cancelarReserva, confirmarReservaPagada, reservarClase } from '@/lib/dominio/reservas'
 import { acreditar, baseLimpia, crearAlumno, crearClase, creditosDe, DIA, emailsDe, en, HORA } from './ayudas'
@@ -154,5 +154,30 @@ describe('vencimiento de packs', () => {
       ahora: en(ahora, HORA),
     })
     expect(await creditosDe(alumno)).toBe(1)
+  })
+
+  it('el ajuste manual suma en un pack nuevo y resta desde el que vence primero', async () => {
+    const ahora = new Date()
+    const alumno = await crearAlumno()
+    const admin = await crearAlumno('Admin')
+    const viejo = await acreditar(alumno, 2, en(ahora, -20 * DIA))
+    const nuevo = await acreditar(alumno, 4, ahora)
+    await ajustarCreditos(db, { usuarioId: alumno, delta: 2, nota: 'Regalo', actorId: admin, ahora })
+    expect(await creditosDe(alumno)).toBe(8)
+    await ajustarCreditos(db, { usuarioId: alumno, delta: -3, nota: 'Error de carga', actorId: admin, ahora })
+    expect(await creditosDe(alumno)).toBe(5)
+    const [p1] = await db.select().from(packs).where(eq(packs.id, viejo))
+    const [p2] = await db.select().from(packs).where(eq(packs.id, nuevo))
+    expect([p1.creditosRestantes, p2.creditosRestantes]).toEqual([0, 3])
+    const ajustes = await db
+      .select()
+      .from(movimientosCredito)
+      .where(and(eq(movimientosCredito.usuarioId, alumno), eq(movimientosCredito.motivo, 'ajuste')))
+    expect(ajustes.map((m) => m.delta).sort()).toEqual([-1, -2, 2].sort())
+    expect(ajustes.every((m) => m.actorId === admin)).toBe(true)
+    await expect(
+      ajustarCreditos(db, { usuarioId: alumno, delta: -9, nota: 'x', actorId: admin, ahora }),
+    ).rejects.toMatchObject({ codigo: 'SIN_CREDITOS' })
+    expect(await creditosDe(alumno)).toBe(5)
   })
 })

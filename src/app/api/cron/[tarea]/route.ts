@@ -38,7 +38,14 @@ async function correr(req: Request, { params }: RouteContext<'/api/cron/[tarea]'
   const ahora = new Date()
   if (tarea === 'todo') {
     const resultado: Record<string, unknown> = {}
-    for (const t of ['liberar', 'lista-de-espera', 'vencer-packs', 'recordatorios', 'generar-clases', 'emails'] as Tarea[]) {
+    for (const t of [
+      'liberar',
+      'lista-de-espera',
+      'vencer-packs',
+      'recordatorios',
+      'generar-clases',
+      'emails',
+    ] as Tarea[]) {
       resultado[t] = await TAREAS[t](ahora)
     }
     return Response.json({ ok: true, ahora: ahora.toISOString(), resultado })

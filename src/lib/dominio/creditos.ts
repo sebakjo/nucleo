@@ -1,6 +1,7 @@
 import { and, asc, eq, gt, lte, sql } from 'drizzle-orm'
-import type { Ejecutor, Tx } from '@/db'
+import type { DB, Ejecutor, Tx } from '@/db'
 import { movimientosCredito, packs, type Pack } from '@/db/schema'
+import { ErrorDominio } from './errores'
 import { vencimientoCreditoDevuelto } from './reglas'
 
 type Motivo = (typeof movimientosCredito.$inferInsert)['motivo']
@@ -201,4 +202,56 @@ export async function saldoCreditos(tx: Ejecutor, usuarioId: string, ahora: Date
       venceEn: p.venceEn!,
     })),
   }
+}
+
+/**
+ * Ajuste manual desde el panel. Sumar crea un pack "Ajuste del estudio" con 30 días de validez;
+ * restar descuenta de los packs vigentes empezando por el que vence primero. Siempre deja un
+ * movimiento con quién lo hizo y por qué.
+ */
+export async function ajustarCreditos(
+  db: DB,
+  datos: { usuarioId: string; delta: number; nota: string; actorId: string; ahora: Date },
+): Promise<void> {
+  if (!Number.isInteger(datos.delta) || datos.delta === 0) throw new ErrorDominio('DATOS_INVALIDOS')
+  await db.transaction(async (tx) => {
+    if (datos.delta > 0) {
+      const [pack] = await tx
+        .insert(packs)
+        .values({
+          usuarioId: datos.usuarioId,
+          nombre: 'Ajuste del estudio',
+          creditosTotales: datos.delta,
+          creditosRestantes: 0,
+          estado: 'activo',
+          compradoEn: datos.ahora,
+          venceEn: vencimientoCreditoDevuelto(datos.ahora),
+          creadoEn: datos.ahora,
+        })
+        .returning()
+      await moverCredito(tx, { ...datos, packId: pack.id, motivo: 'ajuste' })
+      return
+    }
+    const vigentes = await tx
+      .select()
+      .from(packs)
+      .where(
+        and(
+          eq(packs.usuarioId, datos.usuarioId),
+          eq(packs.estado, 'activo'),
+          gt(packs.venceEn, datos.ahora),
+          gt(packs.creditosRestantes, 0),
+        ),
+      )
+      .orderBy(asc(packs.venceEn))
+      .for('update')
+    let falta = -datos.delta
+    if (vigentes.reduce((s, p) => s + p.creditosRestantes, 0) < falta) throw new ErrorDominio('SIN_CREDITOS')
+    for (const pack of vigentes) {
+      if (falta === 0) break
+      const sale = Math.min(falta, pack.creditosRestantes)
+      await moverCredito(tx, { ...datos, packId: pack.id, delta: -sale, motivo: 'ajuste' })
+      falta -= sale
+    }
+  })
 }

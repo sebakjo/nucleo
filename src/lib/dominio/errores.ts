@@ -23,8 +23,12 @@ export const MENSAJES = {
 export type CodigoError = keyof typeof MENSAJES
 
 export class ErrorDominio extends Error {
-  constructor(readonly codigo: CodigoError) {
-    super(MENSAJES[codigo])
+  /** `mensaje` reemplaza al texto genérico cuando hay un detalle más útil (por ejemplo, con qué choca). */
+  constructor(
+    readonly codigo: CodigoError,
+    mensaje?: string,
+  ) {
+    super(mensaje ?? MENSAJES[codigo])
     this.name = 'ErrorDominio'
   }
 }

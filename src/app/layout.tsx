@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Onest } from 'next/font/google'
+import Script from 'next/script'
+import { SCRIPT_TEMA } from '@/components/admin/BotonTema'
 import { urlApp } from '@/lib/config'
 import './globals.css'
 
@@ -30,8 +32,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="es-AR" className={onest.variable}>
+    <html lang="es-AR" className={onest.variable} suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
+        <Script id="tema-panel" strategy="beforeInteractive">
+          {SCRIPT_TEMA}
+        </Script>
         <a
           href="#contenido"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded-boton focus:bg-superficie focus:px-4 focus:py-2"
